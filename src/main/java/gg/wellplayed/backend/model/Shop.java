@@ -4,7 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+
+import java.util.ArrayList;
+
+import gg.wellplayed.backend.model.Game;
 
 // Le decimos a Spring que esto es una Entidad
 // Y que además corresponde a una Tabla en la DB
@@ -22,6 +27,10 @@ public class Shop {
 	private String icon;
 	private String siteUrl;
 	
+	// Relación N:M
+	@ManyToMany(mappedBy = "shops")
+	private ArrayList<Game> games = new ArrayList<>();
+
 	/** En cada entidad DEBEMOS definir (al menos 2) constructores
 	 * ¿Por qué? -> https://stackoverflow.com/a/73583219
 	 */
