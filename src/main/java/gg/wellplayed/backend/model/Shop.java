@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import gg.wellplayed.backend.model.Game;
 
@@ -29,7 +30,7 @@ public class Shop {
 	
 	// Relación N:M
 	@ManyToMany(mappedBy = "shops")
-	private ArrayList<Game> games = new ArrayList<>();
+	private List<Game> games;
 
 	/** En cada entidad DEBEMOS definir (al menos 2) constructores
 	 * ¿Por qué? -> https://stackoverflow.com/a/73583219
@@ -39,18 +40,20 @@ public class Shop {
 	public Shop() {super();}
 	
 	// Constructor con los datos, pero sin ID. Spring lo necesita.
-	public Shop(String name, String icon, String siteUrl) {
+	public Shop(String name, String icon, String siteUrl, List<Game> games) {
 		this.name = name;
 		this.icon = icon;
 		this.siteUrl = siteUrl;
+		this.games = games;
 	}
 	
 	// Constructor con los datos Y la ID. Útil para hacer pruebas a mano nosotros.
-	public Shop(Long id, String name, String icon, String siteUrl) {
+	public Shop(Long id, String name, String icon, String siteUrl, List<Game> games) {
 		this.id = id;
 		this.name = name;
 		this.icon = icon;
 		this.siteUrl = siteUrl;
+		this.games = games;
 	}
 	
 	// Constructor que toma una entidad. Sirve para hacer una copia profunda (deep copy) pero no es crucial
@@ -60,6 +63,7 @@ public class Shop {
 		this.name = s.getName();
 		this.icon = s.getIcon();
 		this.siteUrl = s.getSiteUrl();
+		this.games = s.getGames();
 	}
 	
 	// Con el IDE definimos getters/setters
@@ -76,6 +80,9 @@ public class Shop {
 	public String getSiteUrl() {
 		return siteUrl;
 	}
+	public List<Game> getGames() {
+		return games;
+	}
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -87,5 +94,8 @@ public class Shop {
 	}
 	public void setSiteUrl(String siteUrl) {
 		this.siteUrl = siteUrl;
+	}
+	public void setGames(List<Game> games) {
+		this.games = games;
 	}
 }
