@@ -3,6 +3,7 @@ package gg.wellplayed.backend.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import gg.wellplayed.backend.validInput.game.GameCreationDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -94,6 +95,13 @@ public class Game {
 
 	public void setShops(List<Shop> shops) {
 		this.shops = shops;
+	}
+	
+	public static Game ParseCreationDTO(GameCreationDTO gameDto) {
+		Game g = new Game();
+		g.setName(gameDto.name());
+		g.setSummary(gameDto.summary());
+		return g;
 	}
 
 }

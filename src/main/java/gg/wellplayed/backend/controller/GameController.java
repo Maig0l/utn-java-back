@@ -1,6 +1,5 @@
 package gg.wellplayed.backend.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.service.GameService;
+import gg.wellplayed.backend.validInput.game.GameCreationDTO;
 
 @RestController
 @RequestMapping("/games")
@@ -27,8 +27,9 @@ public class GameController {
 	}
 	
 	@PostMapping
-	public Game makeGame(@RequestBody Game gameReq) {
-		return gameService.save(gameReq);
+	public Game makeGame(@RequestBody GameCreationDTO gameReq) {
+		Game game = Game.ParseCreationDTO(gameReq);
+		return gameService.save(game);
 	}
 	
 	@DeleteMapping("/{id}")
