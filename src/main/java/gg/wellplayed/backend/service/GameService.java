@@ -14,6 +14,10 @@ public class GameService {
 	@Autowired
 	GameRepository gameRepo;
 	
+	public Game getOne(Long id) {
+		return gameRepo.getReferenceById(id);
+	}
+	
 	public List<Game> findAll() {
 		return gameRepo.findAll();
 	}

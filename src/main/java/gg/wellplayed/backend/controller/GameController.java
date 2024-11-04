@@ -14,14 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
+import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.model.Game;
+import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.service.GameService;
+import gg.wellplayed.backend.service.ShopService;
 
 @RestController
 @RequestMapping("/games")
 public class GameController {
 	@Autowired
 	GameService gameService;
+	@Autowired
+	ShopService shopService;
+	
+	/** CRUD operations **/
 	
 	@GetMapping
 	public ApiResponse listGames() {
@@ -44,5 +51,16 @@ public class GameController {
 	public ApiResponse deleteGame(@PathVariable("id") Long id) {
 		gameService.deleteById(id);
 		return new ApiResponse("Game  deleted");
+	}
+	
+	/** Relationship opeartions **/
+	
+	@PostMapping("/{id}/shops")
+	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkShopDTO linkShopReq) {
+		Game game = gameService.getOne(gameId);
+		Shop shop = shopService.getOne(linkShopReq.shopId());
+		game.linkShop(shop);
+		gameService.save(game);
+		return new ApiResponse("Dang, they really sell this there? (Game associated to shop and updated)");
 	}
 }

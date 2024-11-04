@@ -38,6 +38,8 @@ public class ShopController {
 	@Autowired
 	ShopService shopService;
 	
+	/** CRUD Operations **/
+	
 	// GetMapping indica que este método se mapea a las request tipo GET /shop
 	@GetMapping
 	public ApiResponse listShops() {
@@ -45,6 +47,13 @@ public class ShopController {
 		String msj = String.format("Total: %d shops", shops.size());
 
 		return new ApiResponse(msj, shops);
+	}
+	
+	@GetMapping("/{id}")
+	public ApiResponse getShop(@PathVariable("id") Long id) {
+		return new ApiResponse(
+			"",
+			shopService.getOne(id));
 	}
 	
 	// PostMapping indica que este método se mapea a las request tipo POST /shop
