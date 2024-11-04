@@ -1,4 +1,6 @@
-# WellPlayed: Backend: Java Edition
+# WellPlayed: Backend
+
+![Java Edition](edition.png)
 
 > Backend API para la aplicación WellPlayed
 >
