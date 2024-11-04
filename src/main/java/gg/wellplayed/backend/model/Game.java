@@ -1,6 +1,6 @@
 package gg.wellplayed.backend.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
@@ -33,7 +33,7 @@ public class Game {
 	private List<String> externalLinks;
 	private String imgCover;
 	private String imgBanner;
-	private LocalDateTime releasedAt;
+	private LocalDate releasedAt;
 	// Relación N:M (lado propietario)
 	@ManyToMany
 	@JoinTable(
@@ -62,6 +62,7 @@ public class Game {
 		Game g = new Game();
 		g.setName(gameDto.name());
 		g.setSummary(gameDto.summary());
+		g.setReleasedAt(gameDto.releasedAt());
 		return g;
 	}
 }
