@@ -3,6 +3,7 @@ package gg.wellplayed.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.service.ShopService;
 
@@ -38,14 +40,20 @@ public class ShopController {
 	
 	// GetMapping indica que este método se mapea a las request tipo GET /shop
 	@GetMapping
-	public List<Shop> listShops() {
-		return shopService.findAll();
+	public ApiResponse listShops() {
+		List<Shop> shops = shopService.findAll();
+		String msj = String.format("Total: %d shops", shops.size());
+
+		return new ApiResponse(msj, shops);
 	}
 	
 	// PostMapping indica que este método se mapea a las request tipo POST /shop
 	@PostMapping
-	public Shop create(@RequestBody Shop shopReq) {
-		return shopService.saveUser(shopReq);
+	public ApiResponse create(@RequestBody Shop shopReq) {
+		return new ApiResponse(
+				"Shop created successfully",
+				shopService.saveUser(shopReq),
+				HttpStatus.CREATED);
 	}
 	
 	// No vamos a trabajar con PATCH porque eso añade comprobaciones
@@ -53,12 +61,16 @@ public class ShopController {
 	// PathVariable permite a la función tener conciencia del parámetro "id" que viene en la URL
 	// Debe coincidir con el nombre de la variable en la firma de la func.
 	@PutMapping("/{id}")
-	public Shop update(@PathVariable("id") Long id, @RequestBody Shop shopReq) {
-		return shopService.update(id, shopReq);
+	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Shop shopReq) {
+		return new ApiResponse(
+			"Shop updated",
+			shopService.update(id, shopReq));
 	}
 	
 	@DeleteMapping("/{id}")
-	public Shop delete(@PathVariable("id") Long id) {
-		return shopService.delete(id);
+	public ApiResponse delete(@PathVariable("id") Long id) {
+		return new ApiResponse(
+			"Deleted shop N° "+id.toString(),
+			shopService.delete(id));
 	}
 }

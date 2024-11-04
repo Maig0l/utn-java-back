@@ -3,6 +3,7 @@ package gg.wellplayed.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.service.GameService;
@@ -22,19 +24,25 @@ public class GameController {
 	GameService gameService;
 	
 	@GetMapping
-	public List<Game> listGames() {
-		return gameService.findAll();
+	public ApiResponse listGames() {
+		List<Game> games = gameService.findAll();
+		String msj = String.format("Total: %d games", games.size());
+
+		return new ApiResponse(msj, games);
 	}
 	
 	@PostMapping
-	public Game makeGame(@RequestBody GameCreationDTO gameReq) {
+	public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) {
 		Game game = Game.ParseCreationDTO(gameReq);
-		return gameService.save(game);
+		Game saved = gameService.save(game);
+		
+		ApiResponse response = new ApiResponse("Game created successfully", saved, HttpStatus.CREATED);
+		return response;
 	}
 	
 	@DeleteMapping("/{id}")
-	public String deleteGame(@PathVariable("id") Long id) {
+	public ApiResponse deleteGame(@PathVariable("id") Long id) {
 		gameService.deleteById(id);
-		return "Shop deleted!";
+		return new ApiResponse("Game  deleted");
 	}
 }
