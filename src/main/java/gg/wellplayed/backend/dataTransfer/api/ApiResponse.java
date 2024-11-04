@@ -4,7 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Una cas
+ * Un wrapper de {@link ResponseEntity} para devolver respuestas desde la API
+ * con un formato particular en el body.
+ * 
+ * <p>
+ * Provee shorthands para enviar sólo un mensaje, un objeto con un mensaje
+ * adicional, o cualquiera de estas con un status code particular (por defecto
+ * devuelve 200 OK).
+ * </p>
  */
 public class ApiResponse extends ResponseEntity<Object> {
 	public ApiResponse(String message) {
