@@ -1,7 +1,6 @@
 package gg.wellplayed.backend.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
@@ -31,7 +30,7 @@ public class Game {
 	private Long id;
 	private String name;
 	private String summary;
-	private ArrayList<String> externalLinks;
+	private List<String> externalLinks;
 	private String imgCover;
 	private String imgBanner;
 	private LocalDateTime releasedAt;
@@ -42,9 +41,9 @@ public class Game {
 		joinColumns = @JoinColumn(name = "game_id"),
 		inverseJoinColumns = @JoinColumn(name = "shop_id")
 	    )
-	private ArrayList<Shop> shops;
+	private List<Shop> shops;
 	@OneToMany(mappedBy = "game")
-	private ArrayList<Review> reviews;
+	private List<Review> reviews;
 
 	
 	public boolean linkShop(Shop shop) {

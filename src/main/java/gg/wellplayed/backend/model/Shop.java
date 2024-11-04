@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 // Le decimos a Spring que esto es una Entidad
 // Y que además corresponde a una Tabla en la DB
@@ -35,7 +35,7 @@ public class Shop {
 	
 	// Relación N:M
 	@ManyToMany(mappedBy = "shops")
-	private ArrayList<Game> games;
+	private List<Game> games;
 	
 	// Constructor que toma una entidad. Sirve para hacer una copia profunda (deep copy) pero no es crucial
 	// La uso en el DELETE para crear una copia que puedo devolver al cliente luego de borrarlo de la db
