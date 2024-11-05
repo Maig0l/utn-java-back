@@ -53,16 +53,4 @@ public class Game {
 	public boolean unlinkShop(Shop shop) {
 		return shops.remove(shop);
 	}
-	
-	/*
-	 * Métodos de clase
-	 */
-	
-	public static Game ParseCreationDTO(GameCreateDTO gameDto) {
-		Game g = new Game();
-		g.setName(gameDto.name());
-		g.setSummary(gameDto.summary());
-		g.setReleasedAt(gameDto.releasedAt());
-		return g;
-	}
 }

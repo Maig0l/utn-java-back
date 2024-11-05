@@ -28,7 +28,9 @@ public class GameController {
 	@Autowired
 	ShopService shopService;
 	
-	/** CRUD operations **/
+
+	/*  CRUD operations 
+	 */
 	
 	@GetMapping
 	public ApiResponse listGames() {
@@ -40,7 +42,7 @@ public class GameController {
 	
 	@PostMapping
 	public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) {
-		Game game = Game.ParseCreationDTO(gameReq);
+		Game game = gameReq.parseToGameEntity();
 		Game saved = gameService.save(game);
 		
 		ApiResponse response = new ApiResponse("Game created successfully", saved, HttpStatus.CREATED);
@@ -53,7 +55,10 @@ public class GameController {
 		return new ApiResponse("Game  deleted");
 	}
 	
-	/** Relationship opeartions **/
+	
+	
+	/*  Relationship opeartions
+	 */
 	
 	@PostMapping("/{id}/shops")
 	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkShopDTO linkShopReq) {
