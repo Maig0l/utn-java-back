@@ -3,7 +3,10 @@ package gg.wellplayed.backend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,6 +33,7 @@ public class User {
 	private String profileImg;
 	private String biographyText;
 
-	@OneToMany(mappedBy = "author")
+	@JsonIgnore
+	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private List<Review> reviews;
 }

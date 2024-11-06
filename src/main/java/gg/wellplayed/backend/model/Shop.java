@@ -1,6 +1,7 @@
 package gg.wellplayed.backend.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // Le decimos a Spring que esto es una Entidad
 // Y que además corresponde a una Tabla en la DB
@@ -34,7 +37,8 @@ public class Shop {
 	private String siteUrl;
 	
 	// Relación N:M
-	@ManyToMany(mappedBy = "shops")
+	@JsonIgnore
+	@ManyToMany(mappedBy = "shops", fetch = FetchType.LAZY)
 	private List<Game> games;
 	
 	// Constructor que toma una entidad. Sirve para hacer una copia profunda (deep copy) pero no es crucial
