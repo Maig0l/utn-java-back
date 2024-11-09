@@ -9,11 +9,11 @@ public record UserRegistrationRequest(
 	String email,
 	// Password comes in plaintext to the server
 	// (encrypted in the way via TLS, and gets hashed w/ bcrypt here)
-	String clearPassword
+	String password
 	) {
 	
 	public User parseToUser() {
-		String hashedPassword = BCrypt.hashpw(clearPassword, BCrypt.gensalt());
+		String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 		
 		User user = new User();
 		user.setNick(nick);
