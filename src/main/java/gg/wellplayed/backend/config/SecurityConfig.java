@@ -20,7 +20,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authRequest ->
 					authRequest
 						// Sólo las rutas /api/v2/auth están permitidas al público
-						//.requestMatchers("/api/v2/auth/**").permitAll()
+						.requestMatchers("/api/v2/auth/**").permitAll()
 						//.anyRequest().authenticated()
 						.anyRequest().permitAll()
 				)

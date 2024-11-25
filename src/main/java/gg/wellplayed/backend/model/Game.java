@@ -47,7 +47,7 @@ public class Game {
 	    )
 	private List<Shop> shops;
 	@JsonIgnore
-	@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
+	//@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
 	
 	@ManyToMany
 	@JoinTable(
