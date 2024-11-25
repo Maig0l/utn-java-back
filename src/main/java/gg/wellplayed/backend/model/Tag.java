@@ -1,7 +1,6 @@
 package gg.wellplayed.backend.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,12 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.FetchType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.FetchType;
 
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // Le decimos a Spring que esto es una Entidad
 // Y que además corresponde a una Tabla en la DB
@@ -27,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Setter					// < Lombok es una librería que nos ahorra escribir
 @AllArgsConstructor		// < los getters/setters, así como también los
 @NoArgsConstructor		// < constructores mediante estas anotaciones (@)
-public class Shop {
+public class Tag {
 	// Indicamos que este es el ID/Clave primaria
 	// Y que su su valor generado sigue la "identidad" (entero incremental)
 	@Id
@@ -35,21 +32,19 @@ public class Shop {
 	private Long id;
 
 	private String name;
-	private String icon;
-	private String siteUrl;
+	private String description;
 	
 	// Relación N:M
 	@JsonIgnore
-	@ManyToMany(mappedBy = "shops", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
 	private List<Game> games;
 	
 	// Constructor que toma una entidad. Sirve para hacer una copia profunda (deep copy) pero no es crucial
 	// La uso en el DELETE para crear una copia que puedo devolver al cliente luego de borrarlo de la db
-	public Shop(Shop s) {
-		this.id = s.getId();
-		this.name = s.getName();
-		this.icon = s.getIcon();
-		this.siteUrl = s.getSiteUrl();
-		this.games = s.getGames();
+	public Tag(Tag t) {
+		this.id = t.getId();
+		this.name = t.getName();
+		this.description = t.getDescription();
+		this.games = t.getGames();
 	}
 }

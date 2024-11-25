@@ -14,12 +14,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table
@@ -37,6 +40,7 @@ public class Game {
 	private String imgCover;
 	private String imgBanner;
 	private LocalDate releasedAt;
+	
 	// Relación N:M (lado propietario)
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -58,8 +62,20 @@ public class Game {
 	private List<Studio> studios;
 	
 	@OneToMany(mappedBy = "game")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "game_tag",
+			joinColumns = @JoinColumn(name = "game_id"),
+			inverseJoinColumns = @JoinColumn(name = "tag_id")
+		    )
+	private List<Tag> tags;
+	@JsonIgnore
+	@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
 	private List<Review> reviews;
 
+	@ManyToOne
+	@JoinColumn(name = "franchise_id")
+	private Franchise franchise;
 	
 	public boolean linkShop(Shop shop) {
 		return shops.add(shop);

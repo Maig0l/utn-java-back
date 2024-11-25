@@ -21,6 +21,11 @@ public class ApiResponse extends ResponseEntity<Object> {
 	public ApiResponse(String message, Object data) {
 		super(new ObjectWithMessage(message, data), HttpStatus.OK);
 	}
+	
+	public ApiResponse( Object data) {
+		super(new ObjectOnly(data), HttpStatus.OK);
+	}
+
 
 	public ApiResponse(String message, HttpStatus status) {
 		super(new Message(message), status);

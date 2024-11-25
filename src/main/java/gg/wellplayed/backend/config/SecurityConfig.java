@@ -17,14 +17,23 @@ public class SecurityConfig {
 					csrf
 						.disable()
 				)
+			
 				.authorizeHttpRequests(authRequest ->
 					authRequest
 						// Sólo las rutas /api/v2/auth están permitidas al público
-						.requestMatchers("/api/v2/auth/**").permitAll()
+					
+						.requestMatchers("/api/**").permitAll()
 						//.anyRequest().authenticated()
 						.anyRequest().permitAll()
 				)
 				.formLogin(withDefaults())
+				.headers().disable()
 				.build();
+		
 	}
+	
+	
+	 
+
+	
 }
