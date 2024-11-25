@@ -23,7 +23,7 @@ public class StudioService {
 	}
 	
 	public Studio getOne(Long id) {
-		return studioRepository.getReferenceById(id);
+		return studioRepository.findById(id).get();
 	}
 	
 	public Studio update (Long id, Studio newStudio) {
