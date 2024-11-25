@@ -13,6 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.FetchType;
+
 
 @Entity
 @Table
@@ -30,6 +33,7 @@ public class User {
 	private String profileImg;
 	private String biographyText;
 
-	@OneToMany(mappedBy = "author")
+	@JsonIgnore
+	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private List<Review> reviews;
 }
