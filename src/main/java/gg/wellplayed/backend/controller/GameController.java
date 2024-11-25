@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
+import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.Shop;
+import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
+import gg.wellplayed.backend.service.StudioService;
 
 @RestController
 @RequestMapping("/games")
@@ -27,6 +30,8 @@ public class GameController {
 	GameService gameService;
 	@Autowired
 	ShopService shopService;
+	@Autowired
+	StudioService studioService;
 	
 
 	/*  CRUD operations 
@@ -67,5 +72,14 @@ public class GameController {
 		game.linkShop(shop);
 		gameService.save(game);
 		return new ApiResponse("Dang, they really sell this there? (Game associated to shop and updated)");
+	}
+	
+	@PostMapping("/{id}/studios")
+	public ApiResponse linkStudio(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkStudioDTO linkStudioReq) {
+		Game game = gameService.getOne(gameId);
+		Studio studio = studioService.getOne(linkStudioReq.StudioId());
+		game.linkStudio(studio);
+		gameService.save(game);
+		return new ApiResponse("Studio linked correctly");
 	}
 }

@@ -48,6 +48,16 @@ public class Game {
 	private List<Shop> shops;
 	@JsonIgnore
 	@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
+	
+	@ManyToMany
+	@JoinTable(
+		name = "game_studio",
+		joinColumns = @JoinColumn(name = "game_id"),
+		inverseJoinColumns = @JoinColumn(name = "studio_id")
+		)
+	private List<Studio> studios;
+	
+	@OneToMany(mappedBy = "game")
 	private List<Review> reviews;
 
 	
@@ -57,5 +67,13 @@ public class Game {
 	
 	public boolean unlinkShop(Shop shop) {
 		return shops.remove(shop);
+	}
+	
+	public boolean linkStudio(Studio studio) {
+		return studios.add(studio);
+	}
+	
+	public boolean unlinkStudio(Studio studio) {
+		return studios.remove(studio);
 	}
 }
