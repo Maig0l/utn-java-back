@@ -42,6 +42,15 @@ public class Game {
 		inverseJoinColumns = @JoinColumn(name = "shop_id")
 	    )
 	private List<Shop> shops;
+	
+	@ManyToMany
+	@JoinTable(
+		name = "game_studio",
+		joinColumns = @JoinColumn(name = "game_id"),
+		inverseJoinColumns = @JoinColumn(name = "studio_id")
+		)
+	private List<Studio> studios;
+	
 	@OneToMany(mappedBy = "game")
 	private List<Review> reviews;
 
@@ -52,5 +61,13 @@ public class Game {
 	
 	public boolean unlinkShop(Shop shop) {
 		return shops.remove(shop);
+	}
+	
+	public boolean linkStudio(Studio studio) {
+		return studios.add(studio);
+	}
+	
+	public boolean unlinkStudio(Studio studio) {
+		return studios.remove(studio);
 	}
 }
