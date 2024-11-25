@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,8 @@ import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.service.ShopService;
 
+
+
 // TODO: Cuando el DAO levanta una excepción, el servidor retorna un error 500
 // Esto debería recuperarse con un try/catch, devolviendo 404 o lo que corresponda
 
@@ -29,7 +32,7 @@ import gg.wellplayed.backend.service.ShopService;
 
 // Indicamos que esta clase es un CONTROLADOR tipo REST (o sea que recibe Requests)
 // Indicamos que todas las REQUESTS a /shops se mapean a este controlador/a esta clase
-
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/shops")
 public class ShopController {
@@ -46,7 +49,7 @@ public class ShopController {
 		List<Shop> shops = shopService.findAll();
 		String msj = String.format("Total: %d shops", shops.size());
 
-		return new ApiResponse(msj, shops);
+		return new ApiResponse(msj, shops, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
