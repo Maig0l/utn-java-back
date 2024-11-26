@@ -33,7 +33,6 @@ import gg.wellplayed.backend.service.TagService;
 // Indicamos que esta clase es un CONTROLADOR tipo REST (o sea que recibe Requests)
 // Indicamos que todas las REQUESTS a /tags se mapean a este controlador/a esta clase
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/tags")
 public class TagController {
 	// Autowired se encarga de la inyección de dependencias

@@ -19,7 +19,6 @@ import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.service.UserService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/auth")
 public class AuthController {
 	@Autowired

@@ -19,9 +19,7 @@ import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.service.StudioService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/studios")
-
 public class StudioController {
 	@Autowired
 	StudioService studioService;

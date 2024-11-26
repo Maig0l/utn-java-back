@@ -19,9 +19,7 @@ import gg.wellplayed.backend.model.Platform;
 import gg.wellplayed.backend.service.PlatformService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/platforms")
-
 public class PlatformController {
 	@Autowired
 	PlatformService platformService;

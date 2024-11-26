@@ -19,8 +19,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 				.csrf(csrf ->
-					csrf
-						.disable()
+					csrf.disable()
 				)
 			
 				.authorizeHttpRequests(authRequest ->
@@ -32,12 +31,28 @@ public class SecurityConfig {
 						.anyRequest().permitAll()
 				)
 				.formLogin(withDefaults())
-				.headers().disable()
+				.headers(headers ->
+						headers.disable())
 				.build();
 		
 	}
+	
+	@Bean
+	UrlBasedCorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		//TODO: Cambiar "*". Los orígenes admitidos deberían ser http://localhost:4200 (sólo durante desarrollo) o http://wellplayed.gg:80
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+		// Permitir headers para las pre-flight requests
+		// Esto hace que no falle el post
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
 
-	
-	
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+
+		return source;
+	}
 }
 

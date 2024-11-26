@@ -33,7 +33,6 @@ import gg.wellplayed.backend.service.PlatformService;
 import gg.wellplayed.backend.service.PlaylistService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/games")
 public class GameController {
 	@Autowired

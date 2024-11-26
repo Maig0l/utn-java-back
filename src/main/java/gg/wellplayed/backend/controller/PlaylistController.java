@@ -19,7 +19,6 @@ import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.service.PlaylistService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/playlists")
 public class PlaylistController {
 	@Autowired

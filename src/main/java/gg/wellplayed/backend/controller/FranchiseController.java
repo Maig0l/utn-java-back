@@ -19,7 +19,6 @@ import gg.wellplayed.backend.model.Franchise;
 import gg.wellplayed.backend.service.FranchiseService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/franchises")
 public class FranchiseController {
 	
