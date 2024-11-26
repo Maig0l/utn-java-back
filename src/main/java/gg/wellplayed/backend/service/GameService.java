@@ -22,7 +22,7 @@ public class GameService {
 		return gameRepo.findAll();
 	}
 	
-	public Game save(Game gameReq) {
+	public Game saveUser(Game gameReq) {
 		return gameRepo.save(gameReq);
 	}
 	

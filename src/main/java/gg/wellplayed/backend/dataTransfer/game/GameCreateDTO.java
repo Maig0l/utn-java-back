@@ -22,7 +22,6 @@ public record GameCreateDTO(
 		Game g  =new Game();
 		g.setTitle(this.name());
 		g.setSynopsis(this.summary);
-		g.setRelease_date(releasedAt);
 		return g;
 	}
 }

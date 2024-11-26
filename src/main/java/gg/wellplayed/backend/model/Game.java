@@ -40,7 +40,7 @@ public class Game {
 	private String portrait;
 	private String banner;
 	private String pictures;
-	private LocalDate release_date;
+	private String release_date;
 	
 	// Relación N:M (lado propietario)
 	@JsonIgnore

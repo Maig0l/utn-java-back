@@ -58,12 +58,14 @@ public class GameController {
 		return new ApiResponse(msj, games);
 	}
 	
-	@PostMapping
-	public ApiResponse create(@RequestBody Game gameReq) {
-		return new ApiResponse(
-				"Game created successfully",
-				gameService.save(gameReq),
-				HttpStatus.CREATED);
+
+	@PostMapping 
+	 public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) { 
+	  Game game = gameReq.parseToGameEntity(); 
+	  Game saved = gameService.saveUser(game); 
+	   
+	  ApiResponse response = new ApiResponse("Game created successfully", saved, HttpStatus.CREATED); 
+	  return response; 
 	}
 	
 	@DeleteMapping("/{id}")
@@ -81,7 +83,7 @@ public class GameController {
 		Game game = gameService.getOne(gameId);
 		Shop shop = shopService.getOne(linkShopReq.shopId());
 		game.linkShop(shop);
-		gameService.save(game);
+		gameService.saveUser(game);
 		return new ApiResponse("Dang, they really sell this there? (Game associated to shop and updated)");
 	}
 	
@@ -90,7 +92,7 @@ public class GameController {
 		Game game = gameService.getOne(gameId);
 		Studio studio = studioService.getOne(linkStudioReq.studioId());
 		game.linkStudio(studio);
-		gameService.save(game);
+		gameService.saveUser(game);
 		return new ApiResponse("Studio linked correctly");
 	}
 	
@@ -99,7 +101,7 @@ public class GameController {
 		Game game = gameService.getOne(gameId);
 		Platform platform = platformService.getOne(linkPlatformReq.platformId());
 		game.linkPlatform(platform);
-		gameService.save(game);
+		gameService.saveUser(game);
 		return new ApiResponse("Platform linked correctly");
 	}
 	
@@ -108,7 +110,7 @@ public class GameController {
 		Game game = gameService.getOne(gameId);
 		Playlist playlist = playlistService.getOne(linkPlaylistReq.playlistId());
 		game.linkPlaylist(playlist);
-		gameService.save(game);
+		gameService.saveUser(game);
 		return new ApiResponse("Playlist linked correctly");
 	}
 }

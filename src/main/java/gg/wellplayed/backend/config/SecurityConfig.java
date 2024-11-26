@@ -16,7 +16,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 				.csrf(csrf ->
 					csrf
@@ -32,21 +32,12 @@ public class SecurityConfig {
 						.anyRequest().permitAll()
 				)
 				.formLogin(withDefaults())
-				.headers(headers -> headers.disable())
+				.headers().disable()
 				.build();
 		
 	}
+
 	
-	@Bean
-	UrlBasedCorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		//TODO: Cambiar "*". Los orígenes admitidos deberían ser http://localhost:4200 (sólo durante desarrollo) o http://wellplayed.gg:80
-		configuration.setAllowedOrigins(Arrays.asList("*"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-
-		return source;
-	}
+	
 }
+
