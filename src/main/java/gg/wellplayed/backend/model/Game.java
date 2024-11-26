@@ -50,6 +50,16 @@ public class Game {
 		inverseJoinColumns = @JoinColumn(name = "shop_id")
 	    )
 	private List<Shop> shops;
+	
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+		name = "game_platform",
+		joinColumns = @JoinColumn(name = "game_id"),
+		inverseJoinColumns = @JoinColumn(name = "platform_id")
+	    )
+	private List<Platform> platforms;
+	
 	@JsonIgnore
 	//@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
 	
@@ -61,7 +71,8 @@ public class Game {
 		)
 	private List<Studio> studios;
 	
-	@OneToMany(mappedBy = "game")
+	
+	// @OneToMany(mappedBy = "game")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			name = "game_tag",
@@ -91,5 +102,12 @@ public class Game {
 	
 	public boolean unlinkStudio(Studio studio) {
 		return studios.remove(studio);
+	}
+	public boolean linkPlatform(Platform platform) {
+		return platforms.add(platform);
+	}
+	
+	public boolean unlinkPlatform(Platform platform) {
+		return platforms.remove(platform);
 	}
 }

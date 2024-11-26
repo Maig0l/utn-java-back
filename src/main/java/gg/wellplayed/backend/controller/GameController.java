@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
+import gg.wellplayed.backend.dataTransfer.game.LinkPlatformDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
 import gg.wellplayed.backend.model.Game;
+import gg.wellplayed.backend.model.Platform;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
+import gg.wellplayed.backend.service.PlatformService;
 
 @RestController
 @RequestMapping("/games")
@@ -35,6 +38,8 @@ public class GameController {
 	ShopService shopService;
 	@Autowired
 	StudioService studioService;
+	@Autowired
+	PlatformService platformService;
 	
 
 	/*  CRUD operations 
@@ -84,5 +89,14 @@ public class GameController {
 		game.linkStudio(studio);
 		gameService.save(game);
 		return new ApiResponse("Studio linked correctly");
+	}
+	
+	@PostMapping("/{id}/platforms")
+	public ApiResponse linkPlatform(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkPlatformDTO linkPlatformReq) {
+		Game game = gameService.getOne(gameId);
+		Platform platform = platformService.getOne(linkPlatformReq.PlatformId());
+		game.linkPlatform(platform);
+		gameService.save(game);
+		return new ApiResponse("Platform linked correctly");
 	}
 }
