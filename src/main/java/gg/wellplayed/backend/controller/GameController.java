@@ -18,16 +18,19 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkPlatformDTO;
+import gg.wellplayed.backend.dataTransfer.game.LinkPlaylistDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.Platform;
+import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
 import gg.wellplayed.backend.service.PlatformService;
+import gg.wellplayed.backend.service.PlaylistService;
 
 @RestController
 @RequestMapping("/games")
@@ -40,10 +43,11 @@ public class GameController {
 	StudioService studioService;
 	@Autowired
 	PlatformService platformService;
+	@Autowired
+	PlaylistService playlistService;
 	
 
-	/*  CRUD operations 
-	 */
+	/*  CRUD operations  */
 	
 	@GetMapping
 	public ApiResponse listGames() {
@@ -70,8 +74,7 @@ public class GameController {
 	
 	
 	
-	/*  Relationship opeartions
-	 */
+	/*  Relationship opeartions	 */
 	
 	@PostMapping("/{id}/shops")
 	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkShopDTO linkShopReq) {
@@ -85,7 +88,7 @@ public class GameController {
 	@PostMapping("/{id}/studios")
 	public ApiResponse linkStudio(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkStudioDTO linkStudioReq) {
 		Game game = gameService.getOne(gameId);
-		Studio studio = studioService.getOne(linkStudioReq.StudioId());
+		Studio studio = studioService.getOne(linkStudioReq.studioId());
 		game.linkStudio(studio);
 		gameService.save(game);
 		return new ApiResponse("Studio linked correctly");
@@ -94,9 +97,18 @@ public class GameController {
 	@PostMapping("/{id}/platforms")
 	public ApiResponse linkPlatform(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkPlatformDTO linkPlatformReq) {
 		Game game = gameService.getOne(gameId);
-		Platform platform = platformService.getOne(linkPlatformReq.PlatformId());
+		Platform platform = platformService.getOne(linkPlatformReq.platformId());
 		game.linkPlatform(platform);
 		gameService.save(game);
 		return new ApiResponse("Platform linked correctly");
+	}
+	
+	@PostMapping("/{id}/playlists")
+	public ApiResponse linkPlaylist(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkPlaylistDTO linkPlaylistReq) {
+		Game game = gameService.getOne(gameId);
+		Playlist playlist = playlistService.getOne(linkPlaylistReq.playlistId());
+		game.linkPlaylist(playlist);
+		gameService.save(game);
+		return new ApiResponse("Playlist linked correctly");
 	}
 }

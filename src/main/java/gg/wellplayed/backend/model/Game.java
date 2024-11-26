@@ -60,6 +60,14 @@ public class Game {
 	    )
 	private List<Platform> platforms;
 	
+	@ManyToMany
+	@JoinTable(
+		name = "game_playlist",
+		joinColumns = @JoinColumn(name = "game_id"),
+		inverseJoinColumns = @JoinColumn(name = "playlist_id")
+		)
+	private List<Playlist> playlists;
+	
 	@JsonIgnore
 	//@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
 	
@@ -109,5 +117,13 @@ public class Game {
 	
 	public boolean unlinkPlatform(Platform platform) {
 		return platforms.remove(platform);
+	}
+	
+	public boolean linkPlaylist(Playlist playlist) {
+		return playlists.add(playlist);
+	}
+	
+	public boolean unlinkPlaylist(Playlist playlist) {
+		return playlists.remove(playlist);
 	}
 }

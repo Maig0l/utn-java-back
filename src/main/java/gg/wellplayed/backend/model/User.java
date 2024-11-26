@@ -39,4 +39,8 @@ public class User {
 	@JsonIgnore
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private List<Review> reviews;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+	private List<Playlist> playlists;
 }

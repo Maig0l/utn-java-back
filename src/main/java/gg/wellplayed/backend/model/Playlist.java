@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,22 +23,29 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Platform {
+public class Playlist {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String name;
-	private String img;
+	private String description;
+	private Boolean isPrivate;
 	
-	
+	// Relación N:M
 	@JsonIgnore
-	@ManyToMany(mappedBy = "platforms", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "playlists", fetch = FetchType.LAZY)
 	private List<Game> games;
 	
-	public Platform(Platform s) {
-		this.id = s.getId();
-		this.name = s.getName();
-		this.img = s.getImg();
+	@ManyToOne
+	//@JoinColumn(name = "user_id")
+	private User author;
+	
+	public Playlist(Playlist p) {
+		this.id = p.getId();
+		this.name = p.getName();
+		this.description = p.getDescription();
+		this.games = p.getGames();
 	}
 }

@@ -14,44 +14,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
-import gg.wellplayed.backend.model.Platform;
-import gg.wellplayed.backend.service.PlatformService;
+import gg.wellplayed.backend.model.Playlist;
+import gg.wellplayed.backend.service.PlaylistService;
 
 @RestController
-@RequestMapping("/platforms")
-
-public class PlatformController {
+@RequestMapping("/playlists")
+public class PlaylistController {
 	@Autowired
-	PlatformService platformService;
-
+	PlaylistService playlistService;
+	
 	/*  CRUD operations  */
 	
 	@GetMapping
-	public ApiResponse listPlatforms() {
-		List<Platform> platforms = platformService.findAll();
-		String msj = String.format("Total = %d platforms", platforms.size());
+	public ApiResponse listPlaylists() {
+		List<Playlist> platforms = playlistService.findAll();
+		String msj = String.format("Total = %d playlists", platforms.size());
 		
 		return new ApiResponse(msj, platforms);
 	}
 	
 	@GetMapping("/{id}")
-	public ApiResponse getPlatform(@PathVariable("id") Long id) {
-		return new ApiResponse(	"Tuki toma plataforma",	platformService.getOne(id));
+	public ApiResponse getPlaylist(@PathVariable("id") Long id) {
+		return new ApiResponse(	"Tuki toma playlist",	playlistService.getOne(id));
 	}
 	
 	@PostMapping
-	public ApiResponse create(@RequestBody Platform platformReq) {
+	public ApiResponse create(@RequestBody Playlist platformReq) {
 		//Platform platform = platformReq.parseToPlatformEntity();
-		return new ApiResponse("Platform created successfully",	platformService.saveUser(platformReq), HttpStatus.CREATED);
+		return new ApiResponse("Playlist created successfully",	playlistService.savePlaylist(platformReq), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Platform platformReq) {
-		return new ApiResponse("Platform updated", platformService.update(id, platformReq));
+	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Playlist platformReq) {
+		return new ApiResponse("Playlist updated", playlistService.update(id, platformReq));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ApiResponse delete (@PathVariable("id") Long id) {
-		return new ApiResponse("Deleted plaftorm N° "+id.toString(), platformService.delete(id));
+		return new ApiResponse("Deleted Playlist N° "+id.toString(), playlistService.delete(id));
 	}
+
 }
