@@ -9,19 +9,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 public record GameCreateDTO(
-	String name,
-	String summary,
+	String title,
+	String synopsis,
 	@DateTimeFormat(pattern = "yyyy-MM-dd", iso = ISO.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	LocalDate releasedAt
+	LocalDate releaseDate
 	) {
 	
 	public Game parseToGameEntity() {
 		Game g  =new Game();
-		g.setTitle(this.name());
-		g.setSynopsis(this.summary);
+		g.setTitle(this.title);
+		g.setSynopsis(this.synopsis);
 		return g;
 	}
 }
