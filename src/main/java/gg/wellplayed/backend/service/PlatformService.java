@@ -23,7 +23,7 @@ public class PlatformService {
 	}
 	
 	public Platform getOne(Long id) {
-		return platformRepository.getReferenceById(id);
+		return platformRepository.findById(id).get();
 	}
 	
 	public Platform update(Long id, Platform newPlatform) {

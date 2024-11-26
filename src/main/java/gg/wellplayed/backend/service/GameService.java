@@ -15,7 +15,7 @@ public class GameService {
 	GameRepository gameRepo;
 	
 	public Game getOne(Long id) {
-		return gameRepo.getReferenceById(id);
+		return gameRepo.findById(id).get();
 	}
 	
 	public List<Game> findAll() {

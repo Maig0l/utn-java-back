@@ -20,9 +20,9 @@ public record GameCreateDTO(
 	
 	public Game parseToGameEntity() {
 		Game g  =new Game();
-		g.setName(this.name());
-		g.setSummary(this.summary);
-		g.setReleasedAt(releasedAt);
+		g.setTitle(this.name());
+		g.setSynopsis(this.summary);
+		g.setRelease_date(releasedAt);
 		return g;
 	}
 }

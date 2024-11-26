@@ -33,6 +33,7 @@ import gg.wellplayed.backend.service.PlatformService;
 import gg.wellplayed.backend.service.PlaylistService;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/games")
 public class GameController {
 	@Autowired
@@ -58,12 +59,11 @@ public class GameController {
 	}
 	
 	@PostMapping
-	public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) {
-		Game game = gameReq.parseToGameEntity();
-		Game saved = gameService.save(game);
-		
-		ApiResponse response = new ApiResponse("Game created successfully", saved, HttpStatus.CREATED);
-		return response;
+	public ApiResponse create(@RequestBody Game gameReq) {
+		return new ApiResponse(
+				"Game created successfully",
+				gameService.save(gameReq),
+				HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{id}")

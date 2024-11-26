@@ -34,12 +34,13 @@ public class Game {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String name;
-	private String summary;
-	private List<String> externalLinks;
-	private String imgCover;
-	private String imgBanner;
-	private LocalDate releasedAt;
+	private String title;
+	private String synopsis;
+	//private List<String> externalLinks;
+	private String portrait;
+	private String banner;
+	private String pictures;
+	private LocalDate release_date;
 	
 	// Relación N:M (lado propietario)
 	@JsonIgnore

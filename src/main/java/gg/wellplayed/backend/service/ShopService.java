@@ -30,7 +30,7 @@ public class ShopService {
 	public Shop getOne(Long id) {
 		// Uso getReferenceById porque getOne y getById están deprecados lol
 		// pero la función en mi DAO puedo llamarla como yo quiera entonces lo pongo getOne
-		return shopRepository.getReferenceById(id);
+		return shopRepository.findById(id).get();
 	}
 	
 	public Shop update(Long id, Shop newShop) {

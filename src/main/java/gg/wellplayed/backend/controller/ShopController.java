@@ -32,8 +32,9 @@ import gg.wellplayed.backend.service.ShopService;
 
 // Indicamos que esta clase es un CONTROLADOR tipo REST (o sea que recibe Requests)
 // Indicamos que todas las REQUESTS a /shops se mapean a este controlador/a esta clase
-@CrossOrigin(origins = "http://localhost:8080")
+
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/shops")
 public class ShopController {
 	// Autowired se encarga de la inyección de dependencias

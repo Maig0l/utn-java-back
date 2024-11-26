@@ -23,7 +23,7 @@ public class PlaylistService {
 	}
 	
 	public Playlist getOne(Long id) {
-		return playlistRepository.getReferenceById(id);
+		return playlistRepository.findById(id).get();
 	}
 	
 	public Playlist update(Long id, Playlist newPlaylist) {
