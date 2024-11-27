@@ -4,27 +4,29 @@ package gg.wellplayed.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.review.ReviewCreateDTO;
 import gg.wellplayed.backend.model.Review;
+import gg.wellplayed.backend.service.AuthService;
 import gg.wellplayed.backend.service.GameService;
+import gg.wellplayed.backend.service.JwtService;
 import gg.wellplayed.backend.service.ReviewService;
 import gg.wellplayed.backend.service.UserService;
 
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/reviews")
 public class ReviewController {
 
@@ -34,6 +36,8 @@ public class ReviewController {
 	GameService gameService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	JwtService jwtService;
 	
 	/* CRUD Operations */
 	
@@ -57,12 +61,18 @@ public class ReviewController {
 	
 
 	@PostMapping 
-	 public ApiResponse makeReview(@RequestBody ReviewCreateDTO reviewReq) {
-	  Review review = reviewReq.parseToReview(gameService, userService); 
-	  Review saved = reviewService.saveReview(review); 
-	   
-	  ApiResponse response = new ApiResponse("Review created successfully", saved, HttpStatus.CREATED); 
-	  return response; 
+	public ApiResponse makeReview(@RequestBody ReviewCreateDTO reviewReq) {
+		Review review = Review.builder()
+				.author(userService.getOne(reviewReq.getAuthor()))
+				.game(gameService.getOne(reviewReq.getGame()))
+				.title(reviewReq.getTitle())
+				.body(reviewReq.getBody())
+				.score(reviewReq.getScore())
+				.build();
+		Review saved = reviewService.saveReview(review);
+
+		ApiResponse response = new ApiResponse("Review created successfully", saved, HttpStatus.CREATED);
+		return response;
 	}
 
 
