@@ -3,14 +3,19 @@ package gg.wellplayed.backend.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import gg.wellplayed.backend.jwt.JwtAuthFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletContext;
+import lombok.RequiredArgsConstructor;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -18,9 +23,16 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 	@Autowired
 	ServletContext servletContext;
+	
+	@Autowired
+	private final JwtAuthFilter jwtAuthFilter;
+	@Autowired
+	private final AuthenticationProvider authProvider;
+	
 
 	@PostConstruct
 	private String getContextPath() {
@@ -36,16 +48,20 @@ public class SecurityConfig {
 			
 				.authorizeHttpRequests(authRequest ->
 					authRequest
-						// Sólo las rutas /api/v2/auth están permitidas al público
-					
-						// Tomamos la ruta base especificada en el archivo application.properties (context-path) en lugar de hardcodearla
-						.requestMatchers(getContextPath() + "/**").permitAll()
-						//.anyRequest().authenticated()
-						.anyRequest().permitAll()
+						// Tomamos la ruta base especificada en el archivo application.properties (context-path) en lugar de hardcodearla.
+						// Sólo las rutas /api/v2/auth están permitidas al público.
+						.requestMatchers("/auth/**").permitAll()
+						.anyRequest().authenticated()
+						//.anyRequest().permitAll()
 				)
-				.formLogin(withDefaults())
-				.headers(headers ->
-						headers.disable())
+				.sessionManagement(sessionMgr ->
+					sessionMgr
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				)
+				.authenticationProvider(authProvider)
+				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//				.headers(headers ->
+//						headers.disable())
 				.build();
 		
 	}

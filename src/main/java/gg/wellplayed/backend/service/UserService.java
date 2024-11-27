@@ -1,5 +1,7 @@
 package gg.wellplayed.backend.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ public class UserService {
 		return userRepo.save(user);
 	}
 	
-	public User findByNick(String nick) {
+	public Optional<User> findByNick(String nick) {
 		return userRepo.findByNick(nick);
 	}
 	

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
-import gg.wellplayed.backend.dataTransfer.auth.UserLoginRequest;
-import gg.wellplayed.backend.dataTransfer.user.UserRegistrationRequest;
+import gg.wellplayed.backend.dataTransfer.auth.LoginRequest;
+import gg.wellplayed.backend.dataTransfer.auth.LoginResponse;
+import gg.wellplayed.backend.dataTransfer.auth.RegistrationRequest;
 import gg.wellplayed.backend.model.User;
+import gg.wellplayed.backend.service.AuthService;
 import gg.wellplayed.backend.service.UserService;
 
 @RestController
@@ -23,6 +25,8 @@ import gg.wellplayed.backend.service.UserService;
 public class AuthController {
 	@Autowired
 	UserService userService;
+	@Autowired
+	AuthService authService;
 	
 	@GetMapping
 	public ApiResponse index() {
@@ -31,30 +35,24 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-	public ApiResponse register(@RequestBody UserRegistrationRequest request) {
-		User newUser = request.parseToUser();
-		userService.save(newUser);
+	public ApiResponse register(@RequestBody RegistrationRequest request) {
+		String token = authService.register(request);
 		return new ApiResponse(
-			"Welcome to WellPlayed.gg",
-			newUser,
-			HttpStatus.CREATED);
+				"Welcome aboard!",
+				new LoginResponse(token),
+				HttpStatus.CREATED);
 	}
 
 	@PostMapping("/login")
-	public ApiResponse login(@RequestBody UserLoginRequest request) {
-		// buscar usuario por nick
-		User user = userService.findByNick(request.nick());
+	public ApiResponse login(@RequestBody LoginRequest request) {
+		String token = authService.login(request);
 
-		// del usuario saco la hashed password y la comparo con lo que viene en la request (bcrypt se encarga de el resto)
-		boolean isCorrect = BCrypt.checkpw(request.password(), user.getHashedPassword());
-		if (!isCorrect)
-			return new ApiResponse(
-				"Wrong nick/password, buddy.",
-				HttpStatus.FORBIDDEN);
-		
-		// TODO: Generar y devolver JWT en lugar del objeto del usuario
 		return new ApiResponse(
-			"Welcome back",
-			user);
+				"Welcome back!",
+				new LoginResponse(token));
+//		return CoolerApiResponse.builder()
+//				.message("Welcome back!")
+//				.data(new LoginResponse(token))
+//				.build();
 	}
 }

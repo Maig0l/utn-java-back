@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
-import gg.wellplayed.backend.dataTransfer.user.UserRegistrationRequest;
+import gg.wellplayed.backend.dataTransfer.auth.RegistrationRequest;
 import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.service.UserService;
 
@@ -24,7 +24,7 @@ public class UserController {
 	 */
 
 	@PostMapping
-	public ApiResponse register(@RequestBody UserRegistrationRequest request) {
+	public ApiResponse register(@RequestBody RegistrationRequest request) {
 		User newUser = request.parseToUser();
 		newUser = userService.save(newUser);
 		
