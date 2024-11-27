@@ -2,16 +2,26 @@ package gg.wellplayed.backend.controller;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 
@@ -26,6 +36,7 @@ import gg.wellplayed.backend.model.Platform;
 import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
+import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
@@ -57,6 +68,17 @@ public class GameController {
 		return new ApiResponse(msj, games);
 	}
 	
+	@GetMapping("/{id}")
+	public ApiResponse getGame(@PathVariable("id") Long id) {
+		
+		Game game = gameService.getOne(id);
+		String title = game.getTitle();
+		System.out.println(game);
+		return new ApiResponse(
+			title,
+			game, 
+			HttpStatus.OK);
+	}
 
 	@PostMapping 
 	 public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) { 
@@ -74,9 +96,32 @@ public class GameController {
 	}
 	
 	
+
+	@PatchMapping("/{id}")
+	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody  JsonPatch gameReq) {
+		try {Game s = gameService.getOne(id);
+		Game patch = applyPatchToGame(gameReq, s);
+		return new ApiResponse(
+			"Game updated",
+			gameService.saveUser(patch));
+		}
+		catch (JsonPatchException | JsonProcessingException e) {
+	        return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR);
+	     
+	    }
+	}
 	
 	/*  Relationship opeartions	 */
 	
+	private Game applyPatchToGame(
+		JsonPatch patch, Game s) throws JsonPatchException, JsonProcessingException {
+		ObjectMapper mapeador= new ObjectMapper();
+		    JsonNode patched = patch.apply(mapeador.convertValue(s, JsonNode.class));
+		    return mapeador.treeToValue(patched, Game.class);
+		
+	}
+
+
 	@PostMapping("/{id}/shops")
 	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkShopDTO linkShopReq) {
 		Game game = gameService.getOne(gameId);

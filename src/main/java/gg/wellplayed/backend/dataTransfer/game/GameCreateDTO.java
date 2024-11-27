@@ -15,15 +15,24 @@ import lombok.Data;
 public record GameCreateDTO(
 	String title,
 	String synopsis,
+	String portrait,
+	String banner,
+	String pictures,
 	@DateTimeFormat(pattern = "yyyy-MM-dd", iso = ISO.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	LocalDate releaseDate
 	) {
 	
+
+
 	public Game parseToGameEntity() {
 		Game g  =new Game();
 		g.setTitle(this.title);
 		g.setSynopsis(this.synopsis);
+		g.setBanner(this.banner);
+		g.setPortrait(this.portrait);
+		g.setPictures(this.pictures);
+		g.setReleaseDate(this.releaseDate());
 		return g;
 	}
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gg.wellplayed.backend.model.Game;
+import gg.wellplayed.backend.model.Tag;
 import gg.wellplayed.backend.repository.GameRepository;
 
 @Service
@@ -24,6 +25,12 @@ public class GameService {
 	
 	public Game saveUser(Game gameReq) {
 		return gameRepo.save(gameReq);
+	}
+	
+	public Game update(Long id, Game newGame) {
+		Game s = getOne(id);
+		
+		return gameRepo.save(s);
 	}
 	
 	public void deleteById(Long id) {
