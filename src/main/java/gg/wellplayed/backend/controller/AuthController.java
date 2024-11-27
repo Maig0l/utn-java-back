@@ -34,6 +34,8 @@ public class AuthController {
 			"/auth Index");
 	}
 	
+	// Nos mudamos a UserController.java
+	/*
 	@PostMapping("/register")
 	public ApiResponse register(@RequestBody RegistrationRequest request) {
 		String token = authService.register(request);
@@ -55,4 +57,5 @@ public class AuthController {
 //				.data(new LoginResponse(token))
 //				.build();
 	}
+	*/
 }

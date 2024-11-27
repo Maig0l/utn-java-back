@@ -17,8 +17,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import java.util.Arrays;
 
 @Configuration
@@ -40,7 +38,7 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 				.csrf(csrf ->
 					csrf.disable()
@@ -50,9 +48,9 @@ public class SecurityConfig {
 					authRequest
 						// Tomamos la ruta base especificada en el archivo application.properties (context-path) en lugar de hardcodearla.
 						// Sólo las rutas /api/v2/auth están permitidas al público.
-						.requestMatchers("/auth/**").permitAll()
-						.anyRequest().authenticated()
-						//.anyRequest().permitAll()
+						.requestMatchers("/api/users/**").permitAll()
+						//.anyRequest().authenticated()
+						.anyRequest().permitAll()
 				)
 				.sessionManagement(sessionMgr ->
 					sessionMgr
