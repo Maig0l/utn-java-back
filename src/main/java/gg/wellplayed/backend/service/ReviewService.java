@@ -16,7 +16,7 @@ public class ReviewService {
 	@Autowired
 	ReviewRepository reviewRepository;
 	
-	public Review saveUser(Review review) {
+	public Review saveReview(Review review) {
 		return reviewRepository.save(review);
 	}
 	

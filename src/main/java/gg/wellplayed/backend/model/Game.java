@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import jakarta.persistence.Entity;
@@ -89,7 +90,9 @@ public class Game {
 			inverseJoinColumns = @JoinColumn(name = "tag_id")
 		    )
 	private List<Tag> tags;
-	@JsonIgnore
+	
+	//Sin este JsonIgnore, en el front se loopea de game a review y de nuevo a game
+	@JsonManagedReference
 	@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
 	private List<Review> reviews;
 

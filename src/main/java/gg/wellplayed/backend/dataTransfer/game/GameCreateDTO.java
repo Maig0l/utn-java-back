@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.User;
+import gg.wellplayed.backend.service.FranchiseService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -23,8 +24,7 @@ public record GameCreateDTO(
 	LocalDate releaseDate
 	) {
 	
-
-
+	
 	public Game parseToGameEntity() {
 		Game g  =new Game();
 		g.setTitle(this.title);

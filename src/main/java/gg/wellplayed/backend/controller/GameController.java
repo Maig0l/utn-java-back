@@ -31,12 +31,14 @@ import gg.wellplayed.backend.dataTransfer.game.LinkPlatformDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkPlaylistDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
+import gg.wellplayed.backend.model.Franchise;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.Platform;
 import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.model.Game;
+import gg.wellplayed.backend.service.FranchiseService;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
@@ -56,6 +58,8 @@ public class GameController {
 	PlatformService platformService;
 	@Autowired
 	PlaylistService playlistService;
+	@Autowired
+	FranchiseService franchiseService;
 	
 
 	/*  CRUD operations  */
@@ -83,7 +87,8 @@ public class GameController {
 	@PostMapping 
 	 public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) { 
 	  Game game = gameReq.parseToGameEntity(); 
-	  Game saved = gameService.saveUser(game); 
+	  Game saved = gameService.saveUser(game);
+	  
 	   
 	  ApiResponse response = new ApiResponse("Game created successfully", saved, HttpStatus.CREATED); 
 	  return response; 

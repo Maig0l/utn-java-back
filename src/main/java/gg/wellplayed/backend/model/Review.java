@@ -2,6 +2,8 @@ package gg.wellplayed.backend.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,7 @@ public class Review {
 	private String title = null;
 	private String body = null;
 
+	@JsonBackReference
 	@ManyToOne
 	//@JoinColumn(name = "game_id")
 	private Game game;
