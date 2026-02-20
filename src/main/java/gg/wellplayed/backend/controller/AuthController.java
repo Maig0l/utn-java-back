@@ -46,7 +46,7 @@ public class AuthController {
 		User user = userService.findByNick(request.nick());
 
 		// del usuario saco la hashed password y la comparo con lo que viene en la request (bcrypt se encarga de el resto)
-		boolean isCorrect = BCrypt.checkpw(request.password(), user.getHashedPassword());
+		boolean isCorrect = BCrypt.checkpw(request.password(), user.getPassword());
 		if (!isCorrect)
 			return new ApiResponse(
 				"Wrong nick/password, buddy.",

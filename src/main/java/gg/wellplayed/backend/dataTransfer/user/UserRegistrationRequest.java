@@ -18,7 +18,7 @@ public record UserRegistrationRequest(
 		User user = new User();
 		user.setNick(nick);
 		user.setEmail(email);
-		user.setHashedPassword(hashedPassword);
+		user.setPassword(hashedPassword);
 		return user;
 	}
 }

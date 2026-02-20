@@ -32,9 +32,11 @@ public class User {
 	private Long id;
 	private String nick;
 	private String email;
-	private String hashedPassword;
-	private String profileImg;
-	private String biographyText;
+	private String password;
+	private String profile_img;
+	private String bio_text;
+	private Boolean is_admin;
+	private List<String> linked_accounts;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)

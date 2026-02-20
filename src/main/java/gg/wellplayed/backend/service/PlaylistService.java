@@ -28,10 +28,10 @@ public class PlaylistService {
 	
 	public Playlist update(Long id, Playlist newPlaylist) {
 		Playlist p = getOne(id);
-		p.setName(newPlaylist.getName());
+		p.setAuthor(newPlaylist.getAuthor());
 		p.setDescription(newPlaylist.getDescription());
 		p.setIsPrivate(newPlaylist.getIsPrivate());
-		//p.setGames(newPlaylist.getGames());
+		p.setGames(newPlaylist.getGames());
 		
 		return playlistRepository.save(p);
 	}
