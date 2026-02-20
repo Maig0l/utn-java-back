@@ -35,8 +35,8 @@ public class Shop {
 	private Long id;
 
 	private String name;
-	private String icon;
-	private String siteUrl;
+	private String img;
+	private String site;
 	
 	// Relación N:M
 	@JsonIgnore
@@ -48,8 +48,8 @@ public class Shop {
 	public Shop(Shop s) {
 		this.id = s.getId();
 		this.name = s.getName();
-		this.icon = s.getIcon();
-		this.siteUrl = s.getSiteUrl();
+		this.img = s.getImg();
+		this.site = s.getSite();
 		this.games = s.getGames();
 	}
 }

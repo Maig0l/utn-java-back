@@ -36,11 +36,28 @@ public class ShopService {
 	public Shop update(Long id, Shop newShop) {
 		Shop s = getOne(id);
 		s.setName(newShop.getName());
-		s.setIcon(newShop.getIcon());
-		s.setSiteUrl(newShop.getSiteUrl());
+		s.setImg(newShop.getImg());
+		s.setSite(newShop.getSite());
 		
 		return shopRepository.save(s);
 	}
+	
+	
+	public Shop patch(Long id, Shop newShop) {
+		Shop s = getOne(id);
+		if( newShop.getName() != null) {
+		s.setName(newShop.getName());
+		}
+		if( newShop.getImg() != null) {
+		s.setImg(newShop.getImg());
+		}
+		if( newShop.getSite() != null) {
+		s.setSite(newShop.getSite());
+		}
+		return shopRepository.save(s);
+	}
+	
+	
 	
 	public Shop delete(Long id) {
 		Shop s = getOne(id);
