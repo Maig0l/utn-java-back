@@ -3,6 +3,11 @@ package gg.wellplayed.backend.dataTransfer.api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Un wrapper de {@link ResponseEntity} para devolver respuestas desde la API
  * con un formato particular en el body.

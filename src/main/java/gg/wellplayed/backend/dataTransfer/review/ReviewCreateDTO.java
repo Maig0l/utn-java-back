@@ -5,31 +5,19 @@ import gg.wellplayed.backend.model.Review;
 import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
-
-public record ReviewCreateDTO(
-	String title,
-	String body,
-	float score,
-	Long game,
-	Long author
-	
-	
-	) {
-	
-	public Review parseToReview(GameService gameService, UserService userService) {
-		Review review = new Review();
-		review.setTitle(this.title);
-		review.setBody(this.body);
-		review.setAuthor(userService.getOne(this.author));
-		review.setScore(this.score);
-		//Game game2 = (gameService.getOne(this.game));
-		review.setGame(gameService.getOne(this.game));
-		return review;
-	}
-	
-
+@Data
+@AllArgsConstructor
+public class ReviewCreateDTO {
+	String title;
+	String body;
+	float score;
+	Long game;
+	Long author;
 }
 
 
