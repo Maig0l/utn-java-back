@@ -40,8 +40,9 @@ public class Game {
 	//private List<String> externalLinks;
 	private String portrait;
 	private String banner;
-	private String pictures;
 	private LocalDate releaseDate;
+	private Long reviewCount;
+	private Float cumulativeRating;
 	
 	// Relación N:M (lado propietario)
 	@JsonIgnore
@@ -99,6 +100,7 @@ public class Game {
 	@ManyToOne
 	@JoinColumn(name = "franchise_id")
 	private Franchise franchise;
+	
 	
 	public boolean linkShop(Shop shop) {
 		return shops.add(shop);

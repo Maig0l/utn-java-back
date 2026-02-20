@@ -33,6 +33,37 @@ public class GameService {
 		return gameRepo.save(s);
 	}
 	
+	public Game patch(Long id, Game newGame) {
+		Game s = getOne(id);
+		
+		if( newGame.getTitle() != null) {
+			s.setTitle(newGame.getTitle());
+			}
+			if( newGame.getSynopsis() != null) {
+			s.setSynopsis(newGame.getSynopsis());
+			}
+			if( newGame.getReleaseDate() != null) {
+			s.setReleaseDate(newGame.getReleaseDate());
+			}
+			if( newGame.getPortrait() != null) {
+			s.setPortrait(newGame.getPortrait());
+			}
+			if( newGame.getBanner() != null) {
+			s.setBanner(newGame.getBanner());
+			}
+			if( newGame.getFranchise() != null) {
+			s.setFranchise(newGame.getFranchise());
+			}
+			if( newGame.getCumulativeRating() != null) {
+			s.setCumulativeRating(newGame.getCumulativeRating());
+			}
+			if( newGame.getReviewCount() != null) {
+			s.setReviewCount(newGame.getReviewCount());
+			}
+		
+		return gameRepo.save(s);
+	}
+	
 	public void deleteById(Long id) {
 		gameRepo.deleteById(id);
 	}

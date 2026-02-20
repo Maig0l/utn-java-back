@@ -100,9 +100,14 @@ public class GameController {
 		return new ApiResponse("Game  deleted");
 	}
 	
-	
-
 	@PatchMapping("/{id}")
+	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody Game gameReq) {
+		return new ApiResponse(
+			"Game patch",
+			gameService.patch(id, gameReq));
+	}
+
+	/*@PatchMapping("/{id}")
 	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody  JsonPatch gameReq) {
 		try {Game s = gameService.getOne(id);
 		Game patch = applyPatchToGame(gameReq, s);
@@ -114,17 +119,17 @@ public class GameController {
 	        return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR);
 	     
 	    }
-	}
+	}*/
 	
 	/*  Relationship opeartions	 */
 	
-	private Game applyPatchToGame(
+	/*private Game applyPatchToGame(
 		JsonPatch patch, Game s) throws JsonPatchException, JsonProcessingException {
 		ObjectMapper mapeador= new ObjectMapper();
 		    JsonNode patched = patch.apply(mapeador.convertValue(s, JsonNode.class));
 		    return mapeador.treeToValue(patched, Game.class);
 		
-	}
+	}*/
 
 
 	@PostMapping("/{id}/shops")
