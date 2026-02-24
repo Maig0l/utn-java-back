@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,39 +14,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-
-
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
+import gg.wellplayed.backend.dataTransfer.game.GamePatchDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkPlatformDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkPlaylistDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
-import gg.wellplayed.backend.model.Franchise;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.Platform;
 import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
-import gg.wellplayed.backend.model.Game;
-import gg.wellplayed.backend.service.FranchiseService;
+import gg.wellplayed.backend.model.Tag;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
 import gg.wellplayed.backend.service.PlatformService;
 import gg.wellplayed.backend.service.PlaylistService;
+import gg.wellplayed.backend.service.TagService;
 
 @RestController
 @RequestMapping("/games")
+@CrossOrigin(origins = "*", methods = {org.springframework.web.bind.annotation.RequestMethod.GET,
+	org.springframework.web.bind.annotation.RequestMethod.POST,
+	org.springframework.web.bind.annotation.RequestMethod.PUT,
+	org.springframework.web.bind.annotation.RequestMethod.PATCH,
+	org.springframework.web.bind.annotation.RequestMethod.DELETE})
 public class GameController {
 	@Autowired
 	GameService gameService;
@@ -59,8 +53,8 @@ public class GameController {
 	@Autowired
 	PlaylistService playlistService;
 	@Autowired
-	FranchiseService franchiseService;
-	
+	TagService tagService;
+
 
 	/*  CRUD operations  */
 	
@@ -99,33 +93,73 @@ public class GameController {
 		gameService.deleteById(id);
 		return new ApiResponse("Game  deleted");
 	}
-	
-	
 
 	@PatchMapping("/{id}")
-	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody  JsonPatch gameReq) {
-		try {Game s = gameService.getOne(id);
-		Game patch = applyPatchToGame(gameReq, s);
-		return new ApiResponse(
-			"Game updated",
-			gameService.saveUser(patch));
+	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody GamePatchDTO gameReq) {
+		try {
+			Game game = gameService.getOne(id);
+
+			// Update basic fields if provided
+			if (gameReq.title() != null) {
+				game.setTitle(gameReq.title());
+			}
+			if (gameReq.synopsis() != null) {
+				game.setSynopsis(gameReq.synopsis());
+			}
+			if (gameReq.releaseDate() != null) {
+				game.setReleaseDate(gameReq.releaseDate());
+			}
+			if (gameReq.portrait() != null) {
+				game.setPortrait(gameReq.portrait());
+			}
+			if (gameReq.banner() != null) {
+				game.setBanner(gameReq.banner());
+			}
+			if (gameReq.pictures() != null) {
+				game.setPictures(gameReq.pictures());
+			}
+
+			// Update tags relationship
+			if (gameReq.tags() != null) {
+				List<Tag> tags = gameReq.tags().stream()
+					.map(tagId -> tagService.getOne(tagId))
+					.collect(java.util.stream.Collectors.toList());
+				game.setTags(tags);
+			}
+
+			// Update studios relationship
+			if (gameReq.studios() != null) {
+				List<Studio> studios = gameReq.studios().stream()
+					.map(studioId -> studioService.getOne(studioId))
+					.collect(java.util.stream.Collectors.toList());
+				game.setStudios(studios);
+			}
+
+			// Update shops relationship
+			if (gameReq.shops() != null) {
+				List<Shop> shops = gameReq.shops().stream()
+					.map(shopId -> shopService.getOne(shopId))
+					.collect(java.util.stream.Collectors.toList());
+				game.setShops(shops);
+			}
+
+			// Update platforms relationship
+			if (gameReq.platforms() != null) {
+				List<Platform> platforms = gameReq.platforms().stream()
+					.map(platformId -> platformService.getOne(platformId))
+					.collect(java.util.stream.Collectors.toList());
+				game.setPlatforms(platforms);
+			}
+
+			Game updated = gameService.saveUser(game);
+			return new ApiResponse("Game updated successfully", updated);
 		}
-		catch (JsonPatchException | JsonProcessingException e) {
-	        return new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR);
-	     
-	    }
-	}
-	
-	/*  Relationship opeartions	 */
-	
-	private Game applyPatchToGame(
-		JsonPatch patch, Game s) throws JsonPatchException, JsonProcessingException {
-		ObjectMapper mapeador= new ObjectMapper();
-		    JsonNode patched = patch.apply(mapeador.convertValue(s, JsonNode.class));
-		    return mapeador.treeToValue(patched, Game.class);
-		
+		catch (Exception e) {
+			return new ApiResponse("Error updating game: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
+	/*  Relationship operations	 */
 
 	@PostMapping("/{id}/shops")
 	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkShopDTO linkShopReq) {

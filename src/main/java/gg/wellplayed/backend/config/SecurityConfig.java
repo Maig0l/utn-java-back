@@ -43,7 +43,7 @@ public class SecurityConfig {
 				.csrf(csrf ->
 					csrf.disable()
 				)
-			
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(authRequest ->
 					authRequest
 						// Tomamos la ruta base especificada en el archivo application.properties (context-path) en lugar de hardcodearla.
@@ -69,12 +69,12 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		//TODO: Cambiar "*". Los orígenes admitidos deberían ser http://localhost:4200 (sólo durante desarrollo) o http://wellplayed.gg:80
 		configuration.setAllowedOrigins(Arrays.asList("*"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		// Permitir headers para las pre-flight requests
 		// Esto hace que no falle el post
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-
+        configuration.setMaxAge(3600L);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class Studio {
 	
 	private String site;
 
+	@JsonIgnore
 	@ManyToMany
 	private List<Game> game;
 	

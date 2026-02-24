@@ -44,7 +44,6 @@ public class Game {
 	private LocalDate releaseDate;
 	
 	// Relación N:M (lado propietario)
-	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 		name = "game_shop",
@@ -53,7 +52,6 @@ public class Game {
 	    )
 	private List<Shop> shops;
 	
-	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 		name = "game_platform",
@@ -70,9 +68,7 @@ public class Game {
 		)
 	private List<Playlist> playlists;
 	
-	@JsonIgnore
 	//@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
-	
 	@ManyToMany
 	@JoinTable(
 		name = "game_studio",
