@@ -28,9 +28,7 @@ public class TagService {
 	}
 	
 	public Tag getOne(Long id) {
-		Tag t = tagRepository.findById(id).get();
-		
-		return t;
+		return tagRepository.findById(id).orElseThrow();
 	}
 	
 	public Tag update(Long id, Tag newTag) {
@@ -40,7 +38,20 @@ public class TagService {
 		
 		return tagRepository.save(s);
 	}
-	
+
+	public Tag patch(Long id, Tag tagPatch) {
+		Tag s = getOne(id);
+
+		if (tagPatch.getName() != null) {
+			s.setName(tagPatch.getName());
+		}
+		if (tagPatch.getDescription() != null) {
+			s.setDescription(tagPatch.getDescription());
+		}
+
+		return tagRepository.save(s);
+	}
+
 	public Tag delete(Long id) {
 		Tag s = getOne(id);
 		Tag ret = new Tag(s);

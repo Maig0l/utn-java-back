@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,16 +46,14 @@ public class TagController {
 	@GetMapping()
 	public ApiResponse listTags() {
 		List<Tag> tags = tagService.findAll();
-		String msj = String.format("Total: %d tags", tags.size());
 
-		return new ApiResponse( tags);
+		return new ApiResponse(tags);
 	}
 	
 	@GetMapping("/{id}")
 	public ApiResponse getTag(@PathVariable("id") Long id) {
 		
 		Tag tag = tagService.getOne(id);
-		String[] data = {tag.getName(), tag.getDescription()};
 		String name = tag.getName();
 		System.out.println(tag);
 		return new ApiResponse(
@@ -73,8 +71,6 @@ public class TagController {
 				HttpStatus.CREATED);
 	}
 	
-	// No vamos a trabajar con PATCH porque eso añade comprobaciones
-	
 	// PathVariable permite a la función tener conciencia del parámetro "id" que viene en la URL
 	// Debe coincidir con el nombre de la variable en la firma de la func.
 	@PutMapping("/{id}")
@@ -83,7 +79,14 @@ public class TagController {
 			"Tag updated",
 			tagService.update(id, tagReq));
 	}
-	
+
+	@PatchMapping("/{id}")
+	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody Tag tagReq) {
+		return new ApiResponse(
+			"Tag updated partially",
+			tagService.patch(id, tagReq));
+	}
+
 	@DeleteMapping("/{id}")
 	public ApiResponse delete(@PathVariable("id") Long id) {
 		return new ApiResponse(
