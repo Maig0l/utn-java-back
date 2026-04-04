@@ -33,7 +33,20 @@ public class PlatformService {
 		
 		return platformRepository.save(p);
 	}
-	
+
+	public Platform patch(Long id, Platform platformPatch) {
+		Platform p = getOne(id);
+
+		if (platformPatch.getName() != null) {
+			p.setName(platformPatch.getName());
+		}
+		if (platformPatch.getImg() != null) {
+			p.setImg(platformPatch.getImg());
+		}
+
+		return platformRepository.save(p);
+	}
+
 	public Platform delete(Long id) {
 		Platform p = getOne(id);
 		Platform ret = new Platform(p);
