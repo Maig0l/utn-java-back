@@ -3,10 +3,8 @@ package gg.wellplayed.backend.model;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,8 +20,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.FetchType;
 
 @Entity
 @Table
@@ -59,14 +55,6 @@ public class Game {
 		inverseJoinColumns = @JoinColumn(name = "platform_id")
 	    )
 	private List<Platform> platforms;
-	
-	@ManyToMany
-	@JoinTable(
-		name = "game_playlist",
-		joinColumns = @JoinColumn(name = "game_id"),
-		inverseJoinColumns = @JoinColumn(name = "playlist_id")
-		)
-	private List<Playlist> playlists;
 	
 	//@OneToMany(mappedBy = "game", fetch=FetchType.LAZY)
 	@ManyToMany
@@ -117,13 +105,5 @@ public class Game {
 	
 	public boolean unlinkPlatform(Platform platform) {
 		return platforms.remove(platform);
-	}
-	
-	public boolean linkPlaylist(Playlist playlist) {
-		return playlists.add(playlist);
-	}
-	
-	public boolean unlinkPlaylist(Playlist playlist) {
-		return playlists.remove(playlist);
 	}
 }

@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
+import gg.wellplayed.backend.dataTransfer.playlist.PlaylistPatchDTO;
 import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.service.PlaylistService;
 
@@ -49,7 +50,12 @@ public class PlaylistController {
 	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Playlist platformReq) {
 		return new ApiResponse("Playlist updated", playlistService.update(id, platformReq));
 	}
-	
+
+	@PatchMapping("/{id}")
+	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody PlaylistPatchDTO playlistReq) {
+		return new ApiResponse("Playlist updated partially", playlistService.patch(id, playlistReq));
+	}
+
 	@DeleteMapping("/{id}")
 	public ApiResponse delete (@PathVariable("id") Long id) {
 		return new ApiResponse("Deleted Playlist N° "+id.toString(), playlistService.delete(id));

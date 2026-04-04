@@ -18,12 +18,10 @@ import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import gg.wellplayed.backend.dataTransfer.game.GamePatchDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkPlatformDTO;
-import gg.wellplayed.backend.dataTransfer.game.LinkPlaylistDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.Platform;
-import gg.wellplayed.backend.model.Playlist;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.model.Tag;
@@ -31,7 +29,6 @@ import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
 import gg.wellplayed.backend.service.PlatformService;
-import gg.wellplayed.backend.service.PlaylistService;
 import gg.wellplayed.backend.service.TagService;
 
 @RestController
@@ -50,8 +47,6 @@ public class GameController {
 	StudioService studioService;
 	@Autowired
 	PlatformService platformService;
-	@Autowired
-	PlaylistService playlistService;
 	@Autowired
 	TagService tagService;
 
@@ -82,10 +77,7 @@ public class GameController {
 	 public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) { 
 	  Game game = gameReq.parseToGameEntity(); 
 	  Game saved = gameService.saveUser(game);
-	  
-	   
-	  ApiResponse response = new ApiResponse("Game created successfully", saved, HttpStatus.CREATED); 
-	  return response; 
+	  return new ApiResponse("Game created successfully", saved, HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -162,7 +154,7 @@ public class GameController {
 	/*  Relationship operations	 */
 
 	@PostMapping("/{id}/shops")
-	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkShopDTO linkShopReq) {
+	public ApiResponse linkShop(@PathVariable("id") Long gameId, @RequestBody LinkShopDTO linkShopReq) {
 		Game game = gameService.getOne(gameId);
 		Shop shop = shopService.getOne(linkShopReq.shopId());
 		game.linkShop(shop);
@@ -171,7 +163,7 @@ public class GameController {
 	}
 	
 	@PostMapping("/{id}/studios")
-	public ApiResponse linkStudio(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkStudioDTO linkStudioReq) {
+	public ApiResponse linkStudio(@PathVariable("id") Long gameId, @RequestBody LinkStudioDTO linkStudioReq) {
 		Game game = gameService.getOne(gameId);
 		Studio studio = studioService.getOne(linkStudioReq.studioId());
 		game.linkStudio(studio);
@@ -180,7 +172,7 @@ public class GameController {
 	}
 	
 	@PostMapping("/{id}/platforms")
-	public ApiResponse linkPlatform(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkPlatformDTO linkPlatformReq) {
+	public ApiResponse linkPlatform(@PathVariable("id") Long gameId, @RequestBody LinkPlatformDTO linkPlatformReq) {
 		Game game = gameService.getOne(gameId);
 		Platform platform = platformService.getOne(linkPlatformReq.platformId());
 		game.linkPlatform(platform);
@@ -188,12 +180,4 @@ public class GameController {
 		return new ApiResponse("Platform linked correctly");
 	}
 	
-	@PostMapping("/{id}/playlists")
-	public ApiResponse linkPlaylist(@PathVariable("id") Long gameId, @RequestBody(required = true) LinkPlaylistDTO linkPlaylistReq) {
-		Game game = gameService.getOne(gameId);
-		Playlist playlist = playlistService.getOne(linkPlaylistReq.playlistId());
-		game.linkPlaylist(playlist);
-		gameService.saveUser(game);
-		return new ApiResponse("Playlist linked correctly");
-	}
 }
