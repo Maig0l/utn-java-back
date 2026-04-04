@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,7 +59,14 @@ public class FranchiseController {
 				"Franchise updated",
 				franchiseService.update(id, franchiseReq));
 		}
-		
+
+		@PatchMapping("/{id}")
+		public ApiResponse patch(@PathVariable("id") Long id, @RequestBody Franchise franchiseReq) {
+			return new ApiResponse(
+				"Franchise updated partially",
+				franchiseService.patch(id, franchiseReq));
+		}
+
 		@DeleteMapping("/{id}")
 		public ApiResponse delete(@PathVariable("id") Long id) {
 			return new ApiResponse(

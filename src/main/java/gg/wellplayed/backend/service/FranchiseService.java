@@ -34,7 +34,17 @@ public class FranchiseService {
 		
 		return franchiseRepository.save(s);
 	}
-	
+
+	public Franchise patch(Long id, Franchise franchisePatch) {
+		Franchise s = getOne(id);
+
+		if (franchisePatch.getName() != null) {
+			s.setName(franchisePatch.getName());
+		}
+
+		return franchiseRepository.save(s);
+	}
+
 	public Franchise delete(Long id) {
 		Franchise s = getOne(id);
 		Franchise ret = new Franchise(s);
@@ -42,4 +52,3 @@ public class FranchiseService {
 		return ret;
 	}
 }
-
