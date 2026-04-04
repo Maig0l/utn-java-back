@@ -34,7 +34,23 @@ public class StudioService {
 		
 		return studioRepository.save(s); 
 	}
-	
+
+	public Studio patch(Long id, Studio studioPatch) {
+		Studio s = getOne(id);
+
+		if (studioPatch.getName() != null) {
+			s.setName(studioPatch.getName());
+		}
+		if (studioPatch.getType() != null) {
+			s.setType(studioPatch.getType());
+		}
+		if (studioPatch.getSite() != null) {
+			s.setSite(studioPatch.getSite());
+		}
+
+		return studioRepository.save(s);
+	}
+
 	public Studio delete(Long id) {
 		Studio s = getOne(id);
 		Studio ret = new Studio(s);
