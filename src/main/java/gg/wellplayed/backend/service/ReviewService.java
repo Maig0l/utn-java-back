@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import gg.wellplayed.backend.dataTransfer.review.ReviewPatchDTO;
 import gg.wellplayed.backend.model.Review;
 import gg.wellplayed.backend.repository.ReviewRepository;
 
@@ -25,9 +26,7 @@ public class ReviewService {
 	}
 	
 	public Review getOne(Long id) {
-		Review t = reviewRepository.findById(id).get();
-		
-		return t;
+		return reviewRepository.findById(id).orElseThrow();
 	}
 	
 	public Review update(Long id, Review newReview) {
@@ -37,7 +36,23 @@ public class ReviewService {
 		
 		return reviewRepository.save(s);
 	}
-	
+
+	public Review patch(Long id, ReviewPatchDTO reviewPatch) {
+		Review s = getOne(id);
+
+		if (reviewPatch.title() != null) {
+			s.setTitle(reviewPatch.title());
+		}
+		if (reviewPatch.body() != null) {
+			s.setBody(reviewPatch.body());
+		}
+		if (reviewPatch.score() != null) {
+			s.setScore(reviewPatch.score());
+		}
+
+		return reviewRepository.save(s);
+	}
+
 	public Review delete(Long id) {
 		Review s = getOne(id);
 		Review ret = new Review();

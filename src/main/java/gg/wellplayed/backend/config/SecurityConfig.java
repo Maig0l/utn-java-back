@@ -3,6 +3,7 @@ package gg.wellplayed.backend.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -46,10 +47,10 @@ public class SecurityConfig {
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(authRequest ->
 					authRequest
-						// Tomamos la ruta base especificada en el archivo application.properties (context-path) en lugar de hardcodearla.
-						// Sólo las rutas /api/v2/auth están permitidas al público.
-						.requestMatchers("/api/users/**").permitAll()
-						//.anyRequest().authenticated()
+						.requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
+						.requestMatchers(HttpMethod.PUT, "/api/users/**").authenticated()
+						.requestMatchers(HttpMethod.PATCH, "/api/users/**").authenticated()
 						.anyRequest().permitAll()
 				)
 				.sessionManagement(sessionMgr ->
@@ -58,8 +59,6 @@ public class SecurityConfig {
 				)
 				.authenticationProvider(authProvider)
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//				.headers(headers ->
-//						headers.disable())
 				.build();
 		
 	}
@@ -82,4 +81,3 @@ public class SecurityConfig {
 		return source;
 	}
 }
-
