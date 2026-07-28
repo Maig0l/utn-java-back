@@ -23,6 +23,14 @@ public class JwtService {
 		return getToken(new HashMap<>(), user);
 	}
 
+	public String getToken(gg.wellplayed.backend.model.User user) {
+		Map<String, Object> extraClaims = new HashMap<>();
+		extraClaims.put("id", user.getId());
+		extraClaims.put("nick", user.getNick());
+		extraClaims.put("is_admin", user.getRole() == gg.wellplayed.backend.model.UserRole.ADMIN);
+		return getToken(extraClaims, user);
+	}
+
 	private String getToken(Map<String, Object> extraClaims, UserDetails user) {
 		String token = Jwts
 				.builder()
