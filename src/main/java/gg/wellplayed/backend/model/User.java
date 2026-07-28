@@ -64,6 +64,20 @@ public class User implements UserDetails {
 	@JsonIgnore
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private List<Playlist> playlists;
+
+	@ElementCollection
+	@CollectionTable(name = "user_linked_account", joinColumns = @JoinColumn(name = "user_id"))
+	@Column(name = "account")
+	private List<String> linkedAccounts;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+		name = "user_liked_tag",
+		joinColumns = @JoinColumn(name = "user_id"),
+		inverseJoinColumns = @JoinColumn(name = "tag_id")
+	)
+	private List<Tag> likedTags;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(role.name()));
