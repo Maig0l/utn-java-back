@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +41,9 @@ public class AuthService {
 
 	public String login(LoginRequest request) {
 		authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getNick(), request.getPassword()));
-		UserDetails user = userRepository.findByNick(request.getNick()).orElseThrow();
+		User user = userRepository.findByNick(request.getNick()).orElseThrow();
 		String token = jwtService.getToken(user);
-		
+
 		return token;
 	}
 }

@@ -19,6 +19,8 @@ public class UserService {
 	UserRepository userRepo;
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	@Autowired
+	TagService tagService;
 
 	public User save(User user) {
 		return userRepo.save(user);
@@ -49,6 +51,14 @@ public class UserService {
 		if (request.password() != null) {
 			user.setHashedPassword(passwordEncoder.encode(request.password()));
 		}
+		if (request.linkedAccounts() != null) {
+			user.setLinkedAccounts(request.linkedAccounts());
+		}
+		if (request.likedTags() != null) {
+			user.setLikedTags(request.likedTags().stream()
+				.map(tagId -> tagService.getOne(tagId))
+				.collect(java.util.stream.Collectors.toList()));
+		}
 
 		return UserResponseDTO.fromEntity(userRepo.save(user));
 	}
@@ -71,6 +81,14 @@ public class UserService {
 		}
 		if (request.password() != null) {
 			user.setHashedPassword(passwordEncoder.encode(request.password()));
+		}
+		if (request.linkedAccounts() != null) {
+			user.setLinkedAccounts(request.linkedAccounts());
+		}
+		if (request.likedTags() != null) {
+			user.setLikedTags(request.likedTags().stream()
+				.map(tagId -> tagService.getOne(tagId))
+				.collect(java.util.stream.Collectors.toList()));
 		}
 
 		return UserResponseDTO.fromEntity(userRepo.save(user));
