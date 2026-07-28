@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
@@ -25,6 +27,7 @@ import gg.wellplayed.backend.model.Platform;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.model.Tag;
+import gg.wellplayed.backend.service.FileStorageService;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
@@ -49,6 +52,8 @@ public class GameController {
 	PlatformService platformService;
 	@Autowired
 	TagService tagService;
+	@Autowired
+	FileStorageService fileStorageService;
 
 
 	/*  CRUD operations  */
@@ -149,6 +154,26 @@ public class GameController {
 		catch (Exception e) {
 			return new ApiResponse("Error updating game: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	/*  Uploads  */
+
+	@PatchMapping("/{id}/uploads/portrait")
+	public ApiResponse uploadPortrait(@PathVariable("id") Long id, @RequestParam("portrait") MultipartFile file) {
+		Game game = gameService.getOne(id);
+		String filename = fileStorageService.store(file);
+		game.setPortrait(filename);
+		Game updated = gameService.saveUser(game);
+		return new ApiResponse("Portrait actualizado", updated);
+	}
+
+	@PatchMapping("/{id}/uploads/banner")
+	public ApiResponse uploadBanner(@PathVariable("id") Long id, @RequestParam("banner") MultipartFile file) {
+		Game game = gameService.getOne(id);
+		String filename = fileStorageService.store(file);
+		game.setBanner(filename);
+		Game updated = gameService.saveUser(game);
+		return new ApiResponse("Banner actualizado", updated);
 	}
 
 	/*  Relationship operations	 */
