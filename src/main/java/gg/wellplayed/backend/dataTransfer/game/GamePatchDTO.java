@@ -17,6 +17,7 @@ public record GamePatchDTO(
 	@DateTimeFormat(pattern = "yyyy-MM-dd", iso = ISO.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	LocalDate releaseDate,
+	Long franchise,
 	List<Long> tags,
 	List<Long> studios,
 	List<Long> shops,

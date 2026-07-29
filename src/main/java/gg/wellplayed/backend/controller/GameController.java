@@ -28,6 +28,7 @@ import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.model.Tag;
 import gg.wellplayed.backend.service.FileStorageService;
+import gg.wellplayed.backend.service.FranchiseService;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
@@ -54,6 +55,8 @@ public class GameController {
 	TagService tagService;
 	@Autowired
 	FileStorageService fileStorageService;
+	@Autowired
+	FranchiseService franchiseService;
 
 
 	/*  CRUD operations  */
@@ -78,11 +81,45 @@ public class GameController {
 			HttpStatus.OK);
 	}
 
-	@PostMapping 
-	 public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) { 
-	  Game game = gameReq.parseToGameEntity(); 
-	  Game saved = gameService.saveUser(game);
-	  return new ApiResponse("Game created successfully", saved, HttpStatus.CREATED);
+	@PostMapping
+	 public ApiResponse makeGame(@RequestBody GameCreateDTO gameReq) {
+	  try {
+		  Game game = gameReq.parseToGameEntity();
+
+		  if (gameReq.franchise() != null && gameReq.franchise() > 0) {
+			  game.setFranchise(franchiseService.getOne(gameReq.franchise()));
+		  }
+		  if (gameReq.tags() != null) {
+			  game.setTags(gameReq.tags().stream()
+				  .filter(tagId -> tagId != null && tagId > 0)
+				  .map(tagId -> tagService.getOne(tagId))
+				  .collect(java.util.stream.Collectors.toList()));
+		  }
+		  if (gameReq.studios() != null) {
+			  game.setStudios(gameReq.studios().stream()
+				  .filter(studioId -> studioId != null && studioId > 0)
+				  .map(studioId -> studioService.getOne(studioId))
+				  .collect(java.util.stream.Collectors.toList()));
+		  }
+		  if (gameReq.shops() != null) {
+			  game.setShops(gameReq.shops().stream()
+				  .filter(shopId -> shopId != null && shopId > 0)
+				  .map(shopId -> shopService.getOne(shopId))
+				  .collect(java.util.stream.Collectors.toList()));
+		  }
+		  if (gameReq.platforms() != null) {
+			  game.setPlatforms(gameReq.platforms().stream()
+				  .filter(platformId -> platformId != null && platformId > 0)
+				  .map(platformId -> platformService.getOne(platformId))
+				  .collect(java.util.stream.Collectors.toList()));
+		  }
+
+		  Game saved = gameService.saveUser(game);
+		  return new ApiResponse("Game created successfully", saved, HttpStatus.CREATED);
+	  }
+	  catch (Exception e) {
+		  return new ApiResponse("Error creating game: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	  }
 	}
 	
 	@DeleteMapping("/{id}")
@@ -116,9 +153,18 @@ public class GameController {
 				game.setPictures(gameReq.pictures());
 			}
 
+			if (gameReq.franchise() != null) {
+				if (gameReq.franchise() > 0) {
+					game.setFranchise(franchiseService.getOne(gameReq.franchise()));
+				} else {
+					game.setFranchise(null);
+				}
+			}
+
 			// Update tags relationship
 			if (gameReq.tags() != null) {
 				List<Tag> tags = gameReq.tags().stream()
+					.filter(tagId -> tagId != null && tagId > 0)
 					.map(tagId -> tagService.getOne(tagId))
 					.collect(java.util.stream.Collectors.toList());
 				game.setTags(tags);
@@ -127,6 +173,7 @@ public class GameController {
 			// Update studios relationship
 			if (gameReq.studios() != null) {
 				List<Studio> studios = gameReq.studios().stream()
+					.filter(studioId -> studioId != null && studioId > 0)
 					.map(studioId -> studioService.getOne(studioId))
 					.collect(java.util.stream.Collectors.toList());
 				game.setStudios(studios);
@@ -135,6 +182,7 @@ public class GameController {
 			// Update shops relationship
 			if (gameReq.shops() != null) {
 				List<Shop> shops = gameReq.shops().stream()
+					.filter(shopId -> shopId != null && shopId > 0)
 					.map(shopId -> shopService.getOne(shopId))
 					.collect(java.util.stream.Collectors.toList());
 				game.setShops(shops);
@@ -143,6 +191,7 @@ public class GameController {
 			// Update platforms relationship
 			if (gameReq.platforms() != null) {
 				List<Platform> platforms = gameReq.platforms().stream()
+					.filter(platformId -> platformId != null && platformId > 0)
 					.map(platformId -> platformService.getOne(platformId))
 					.collect(java.util.stream.Collectors.toList());
 				game.setPlatforms(platforms);

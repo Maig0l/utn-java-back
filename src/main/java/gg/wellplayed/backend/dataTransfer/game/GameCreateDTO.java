@@ -21,7 +21,12 @@ public record GameCreateDTO(
 	String pictures,
 	@DateTimeFormat(pattern = "yyyy-MM-dd", iso = ISO.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	LocalDate releaseDate
+	LocalDate releaseDate,
+	Long franchise,
+	java.util.List<Long> tags,
+	java.util.List<Long> studios,
+	java.util.List<Long> shops,
+	java.util.List<Long> platforms
 	) {
 	
 	
