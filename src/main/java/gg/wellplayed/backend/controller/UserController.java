@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.auth.LoginRequest;
@@ -22,7 +24,10 @@ import gg.wellplayed.backend.dataTransfer.auth.RegistrationRequest;
 import gg.wellplayed.backend.dataTransfer.user.UserPatchDTO;
 import gg.wellplayed.backend.dataTransfer.user.UserPutDTO;
 import gg.wellplayed.backend.dataTransfer.user.UserResponseDTO;
+import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.service.AuthService;
+import gg.wellplayed.backend.service.FileStorageService;
+import gg.wellplayed.backend.service.ReviewService;
 import gg.wellplayed.backend.service.UserService;
 
 @RestController
@@ -32,6 +37,10 @@ public class UserController {
 	UserService userService;
 	@Autowired
 	AuthService authService;
+	@Autowired
+	ReviewService reviewService;
+	@Autowired
+	FileStorageService fileStorageService;
 
 
 	/* CRUD Operations
@@ -53,6 +62,28 @@ public class UserController {
 		return new ApiResponse(
 				"Welcome back!",
 				new LoginResponse(token));
+	}
+
+	@GetMapping("/by-nick/{nick}")
+	public ApiResponse getUserByNick(@PathVariable("nick") String nick) {
+		try {
+			UserResponseDTO user = UserResponseDTO.fromEntity(userService.findByNick(nick).orElseThrow());
+			return new ApiResponse("User fetched", user);
+		}
+		catch (NoSuchElementException e) {
+			return new ApiResponse("User not found", HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@GetMapping("/{nick}/reviews")
+	public ApiResponse getUserReviews(@PathVariable("nick") String nick) {
+		try {
+			userService.findByNick(nick).orElseThrow();
+			return new ApiResponse(reviewService.findByAuthorNick(nick));
+		}
+		catch (NoSuchElementException e) {
+			return new ApiResponse("User not found", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@GetMapping("/{id}")
@@ -104,6 +135,18 @@ public class UserController {
 		catch (AccessDeniedException e) {
 			return new ApiResponse("Forbidden", HttpStatus.FORBIDDEN);
 		}
+	}
+
+	@PatchMapping("/me/profile_img")
+	public ApiResponse uploadProfileImg(@RequestParam("profile_img") MultipartFile file, Authentication authentication) {
+		if (!isAuthenticated(authentication)) {
+			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		User user = userService.findByNick(authentication.getName()).orElseThrow();
+		String filename = fileStorageService.store(file);
+		user.setProfileImg(filename);
+		UserResponseDTO updated = UserResponseDTO.fromEntity(userService.save(user));
+		return new ApiResponse("Foto de perfil actualizada", updated);
 	}
 
 	private boolean isAuthenticated(Authentication authentication) {
