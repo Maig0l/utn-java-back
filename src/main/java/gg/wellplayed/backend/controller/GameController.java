@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,21 +23,27 @@ import org.springframework.web.multipart.MultipartFile;
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
 import gg.wellplayed.backend.dataTransfer.game.GamePatchDTO;
+import gg.wellplayed.backend.dataTransfer.game.GamePicturesDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkPlatformDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkShopDTO;
 import gg.wellplayed.backend.dataTransfer.game.LinkStudioDTO;
+import gg.wellplayed.backend.dataTransfer.review.ReviewPostDTO;
 import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.model.Platform;
+import gg.wellplayed.backend.model.Review;
 import gg.wellplayed.backend.model.Shop;
 import gg.wellplayed.backend.model.Studio;
 import gg.wellplayed.backend.model.Tag;
+import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.service.FileStorageService;
 import gg.wellplayed.backend.service.FranchiseService;
 import gg.wellplayed.backend.service.GameService;
+import gg.wellplayed.backend.service.ReviewService;
 import gg.wellplayed.backend.service.ShopService;
 import gg.wellplayed.backend.service.StudioService;
 import gg.wellplayed.backend.service.PlatformService;
 import gg.wellplayed.backend.service.TagService;
+import gg.wellplayed.backend.service.UserService;
 
 @RestController
 @RequestMapping("/games")
@@ -57,9 +64,13 @@ public class GameController {
 	@Autowired
 	TagService tagService;
 	@Autowired
-	FileStorageService fileStorageService;
+	ReviewService reviewService;
+	@Autowired
+	UserService userService;
 	@Autowired
 	FranchiseService franchiseService;
+	@Autowired
+	FileStorageService fileStorageService;
 
 
 	/*  CRUD operations  */
@@ -233,6 +244,39 @@ public class GameController {
 		return new ApiResponse(games);
 	}
 
+	/*  Reviews anidadas  */
+
+	@GetMapping("/{id}/reviews")
+	public ApiResponse listGameReviews(@PathVariable("id") Long id) {
+		return new ApiResponse(gameService.getOne(id).getReviews());
+	}
+
+	@PostMapping("/{id}/reviews")
+	public ApiResponse postGameReview(@PathVariable("id") Long id, @RequestBody ReviewPostDTO reviewReq, Authentication authentication) {
+		if (!isAuthenticated(authentication)) {
+			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		Game game = gameService.getOne(id);
+		User author = userService.findByNick(authentication.getName()).orElseThrow();
+
+		Review review = Review.builder()
+				.author(author)
+				.game(game)
+				.title(reviewReq.title())
+				.body(reviewReq.body())
+				.score(reviewReq.score())
+				.build();
+		Review saved = reviewService.saveReview(review);
+
+		return new ApiResponse("Review created successfully", saved, HttpStatus.CREATED);
+	}
+
+	private boolean isAuthenticated(Authentication authentication) {
+		return authentication != null
+			&& authentication.isAuthenticated()
+			&& !"anonymousUser".equals(authentication.getName());
+	}
+
 	/*  Uploads  */
 
 	@PatchMapping("/{id}/uploads/portrait")
@@ -251,6 +295,16 @@ public class GameController {
 		game.setBanner(filename);
 		Game updated = gameService.saveUser(game);
 		return new ApiResponse("Banner actualizado", updated);
+	}
+
+	@PostMapping("/{id}/pictures")
+	public ApiResponse addPictures(@PathVariable("id") Long id, @RequestBody GamePicturesDTO picturesReq) {
+		Game game = gameService.getOne(id);
+		String existing = game.getPictures();
+		String joined = String.join(",", picturesReq.urls());
+		game.setPictures((existing == null || existing.isBlank()) ? joined : existing + "," + joined);
+		Game updated = gameService.saveUser(game);
+		return new ApiResponse("Fotos agregadas", updated);
 	}
 
 	/*  Relationship operations	 */
