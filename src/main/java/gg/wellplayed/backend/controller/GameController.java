@@ -1,8 +1,11 @@
 package gg.wellplayed.backend.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -203,6 +206,31 @@ public class GameController {
 		catch (Exception e) {
 			return new ApiResponse("Error updating game: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	/*  Search & filter  */
+
+	@GetMapping("/search")
+	public ApiResponse search(@RequestParam("title") String title) {
+		return new ApiResponse(gameService.findByTitle(title));
+	}
+
+	@GetMapping("/filter")
+	public ApiResponse filter(
+			@RequestParam(value = "tags", required = false) List<Long> tags,
+			@RequestParam(value = "platform", required = false) List<Long> platform,
+			@RequestParam(value = "studio", required = false) List<Long> studio,
+			@RequestParam(value = "franchise", required = false) List<Long> franchise,
+			@RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+			@RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+			@RequestParam(value = "minStarValue", required = false) Float minStarValue,
+			@RequestParam(value = "maxStarValue", required = false) Float maxStarValue) {
+		List<Game> games = gameService.filterGames(
+				tags, platform, studio, franchise,
+				startDate != null ? startDate.toLocalDate() : null,
+				endDate != null ? endDate.toLocalDate() : null,
+				minStarValue, maxStarValue);
+		return new ApiResponse(games);
 	}
 
 	/*  Uploads  */
