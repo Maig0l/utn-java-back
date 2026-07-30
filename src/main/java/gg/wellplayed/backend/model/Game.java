@@ -84,6 +84,20 @@ public class Game {
 	@JoinColumn(name = "franchise_id")
 	private Franchise franchise;
 	
+	public double getCumulativeRating() {
+		if (reviews == null || reviews.isEmpty()) {
+			return 0;
+		}
+		return reviews.stream()
+			.mapToDouble(Review::getScore)
+			.average()
+			.orElse(0);
+	}
+
+	public int getReviewCount() {
+		return reviews == null ? 0 : reviews.size();
+	}
+
 	public boolean linkShop(Shop shop) {
 		return shops.add(shop);
 	}
