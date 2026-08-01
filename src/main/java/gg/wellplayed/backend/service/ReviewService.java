@@ -28,6 +28,10 @@ public class ReviewService {
 	public Review getOne(Long id) {
 		return reviewRepository.findById(id).orElseThrow();
 	}
+
+	public List<Review> findByAuthorNick(String nick) {
+		return reviewRepository.findByAuthor_Nick(nick);
+	}
 	
 	public Review update(Long id, Review newReview) {
 		Review s = getOne(id);

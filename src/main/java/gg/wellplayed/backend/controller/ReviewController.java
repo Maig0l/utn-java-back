@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,30 +37,35 @@ public class ReviewController {
 	UserService userService;
 
 	/* CRUD Operations */
-	
+
 	@GetMapping()
 	public ApiResponse listReviews() {
 		List<Review> reviews = reviewService.findAll();
 		return new ApiResponse( reviews);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ApiResponse getReview(@PathVariable("id") Long id) {
-		
+
 		Review review = reviewService.getOne(id);
 		String title = review.getTitle();
 		System.out.println(review);
 		return new ApiResponse(
 			title,
-			review, 
+			review,
 			HttpStatus.OK);
 	}
-	
 
-	@PostMapping 
-	public ApiResponse makeReview(@RequestBody ReviewCreateDTO reviewReq) {
+
+	@PostMapping
+	public ApiResponse makeReview(@RequestBody ReviewCreateDTO reviewReq, Authentication authentication) {
+		if (!isAuthenticated(authentication)) {
+			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		// El autor SIEMPRE se resuelve del JWT, nunca del body: si no, cualquiera podría
+		// publicar una review "como" otro usuario mandando su id en reviewReq.author.
 		Review review = Review.builder()
-				.author(userService.getOne(reviewReq.getAuthor()))
+				.author(userService.findByNick(authentication.getName()).orElseThrow())
 				.game(gameService.getOne(reviewReq.getGame()))
 				.title(reviewReq.getTitle())
 				.body(reviewReq.getBody())
@@ -90,5 +96,11 @@ public class ReviewController {
 		return new ApiResponse(
 			"Deleted review N° "+id.toString(),
 			reviewService.delete(id));
+	}
+
+	private boolean isAuthenticated(Authentication authentication) {
+		return authentication != null
+			&& authentication.isAuthenticated()
+			&& !"anonymousUser".equals(authentication.getName());
 	}
 }
