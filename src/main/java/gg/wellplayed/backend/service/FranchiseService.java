@@ -21,6 +21,10 @@ public class FranchiseService {
 	public List<Franchise> findAll() {
 		return franchiseRepository.findAll();
 	}
+
+	public List<Franchise> findByName(String name) {
+		return franchiseRepository.findByNameContainingIgnoreCase(name);
+	}
 	
 	public Franchise getOne(Long id) {
 		// Uso getReferenceById porque getOne y getById están deprecados lol

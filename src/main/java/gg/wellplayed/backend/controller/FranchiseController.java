@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
@@ -42,7 +43,12 @@ public class FranchiseController {
 				"",
 				franchiseService.getOne(id));
 		}
-		
+
+		@GetMapping("/search")
+		public ApiResponse search(@RequestParam("name") String name) {
+			return new ApiResponse(franchiseService.findByName(name));
+		}
+
 		
 		@PostMapping
 		public ApiResponse create(@RequestBody Franchise franchiseReq) {
