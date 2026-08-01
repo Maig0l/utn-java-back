@@ -21,6 +21,10 @@ public class PlatformService {
 	public List<Platform> findAll() {
 		return platformRepository.findAll();
 	}
+
+	public List<Platform> findByName(String name) {
+		return platformRepository.findByNameContainingIgnoreCase(name);
+	}
 	
 	public Platform getOne(Long id) {
 		return platformRepository.findById(id).get();

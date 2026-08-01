@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.model.Platform;
+import gg.wellplayed.backend.service.FileStorageService;
 import gg.wellplayed.backend.service.PlatformService;
 
 @RestController
@@ -23,6 +26,8 @@ import gg.wellplayed.backend.service.PlatformService;
 public class PlatformController {
 	@Autowired
 	PlatformService platformService;
+	@Autowired
+	FileStorageService fileStorageService;
 
 	/*  CRUD operations  */
 	
@@ -38,7 +43,12 @@ public class PlatformController {
 	public ApiResponse getPlatform(@PathVariable("id") Long id) {
 		return new ApiResponse(	"Tuki toma plataforma",	platformService.getOne(id));
 	}
-	
+
+	@GetMapping("/search")
+	public ApiResponse search(@RequestParam("name") String name) {
+		return new ApiResponse(platformService.findByName(name));
+	}
+
 	@PostMapping
 	public ApiResponse create(@RequestBody Platform platformReq) {
 		//Platform platform = platformReq.parseToPlatformEntity();
@@ -58,5 +68,14 @@ public class PlatformController {
 	@DeleteMapping("/{id}")
 	public ApiResponse delete (@PathVariable("id") Long id) {
 		return new ApiResponse("Deleted plaftorm N° "+id.toString(), platformService.delete(id));
+	}
+
+	@PatchMapping("/{id}/upload")
+	public ApiResponse upload(@PathVariable("id") Long id, @RequestParam("img") MultipartFile file) {
+		Platform platform = platformService.getOne(id);
+		String filename = fileStorageService.store(file);
+		platform.setImg(filename);
+		Platform updated = platformService.saveUser(platform);
+		return new ApiResponse("Imagen actualizada", updated);
 	}
 }
