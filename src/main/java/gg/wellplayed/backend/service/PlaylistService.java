@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import gg.wellplayed.backend.dataTransfer.playlist.PlaylistCreateDTO;
 import gg.wellplayed.backend.dataTransfer.playlist.PlaylistPatchDTO;
 import gg.wellplayed.backend.model.Playlist;
+import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.repository.GameRepository;
 import gg.wellplayed.backend.repository.PlaylistRepository;
 
@@ -16,13 +18,40 @@ public class PlaylistService {
 	PlaylistRepository playlistRepository;
 	@Autowired
 	GameRepository gameRepository;
+	@Autowired
+	UserService userService;
 
 	public Playlist savePlaylist(Playlist playlist) {
+		return playlistRepository.save(playlist);
+	}
+
+	public Playlist createFromDTO(PlaylistCreateDTO dto) {
+		User owner = userService.getOne(dto.owner());
+
+		Playlist playlist = new Playlist();
+		playlist.setName(dto.name());
+		playlist.setDescription(dto.description());
+		playlist.setIsPrivate(dto.isPrivate() != null ? dto.isPrivate() : false);
+		playlist.setAuthor(owner);
+		if (dto.games() != null) {
+			playlist.setGames(dto.games().stream()
+				.map(gameId -> gameRepository.findById(gameId).orElseThrow())
+				.collect(java.util.stream.Collectors.toList()));
+		}
+
 		return playlistRepository.save(playlist);
 	}
 	
 	public List<Playlist> findAll() {
 		return playlistRepository.findAll();
+	}
+
+	public List<Playlist> findByOwner(Long ownerId) {
+		return playlistRepository.findByAuthor_Id(ownerId);
+	}
+
+	public Long resolveOwnerId(String nick) {
+		return userService.findByNick(nick).map(User::getId).orElse(null);
 	}
 	
 	public Playlist getOne(Long id) {
