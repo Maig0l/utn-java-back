@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PatchMapping;
 
@@ -58,7 +59,12 @@ public class ShopController {
 			"",
 			shopService.getOne(id));
 	}
-	
+
+	@GetMapping("/search")
+	public ApiResponse search(@RequestParam("name") String name) {
+		return new ApiResponse(shopService.findByName(name));
+	}
+
 	// PostMapping indica que este método se mapea a las request tipo POST /shop
 	@PostMapping
 	public ApiResponse create(@RequestBody Shop shopReq) {

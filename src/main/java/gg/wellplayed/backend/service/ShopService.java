@@ -26,6 +26,10 @@ public class ShopService {
 	public List<Shop> findAll() {
 		return shopRepository.findAll();
 	}
+
+	public List<Shop> findByName(String name) {
+		return shopRepository.findByNameContainingIgnoreCase(name);
+	}
 	
 	public Shop getOne(Long id) {
 		// Uso getReferenceById porque getOne y getById están deprecados lol
