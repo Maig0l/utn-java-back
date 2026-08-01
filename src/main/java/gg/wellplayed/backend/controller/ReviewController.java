@@ -78,21 +78,39 @@ public class ReviewController {
 
 
 	@PutMapping("/{id}")
-	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Review reviewReq) {
+	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Review reviewReq, Authentication authentication) {
+		if (!isAuthenticated(authentication)) {
+			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		if (!isOwner(reviewService.getOne(id), authentication)) {
+			return new ApiResponse("Forbidden", HttpStatus.FORBIDDEN);
+		}
 		return new ApiResponse(
 			"Review updated",
 			reviewService.update(id, reviewReq));
 	}
 
 	@PatchMapping("/{id}")
-	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody ReviewPatchDTO reviewReq) {
+	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody ReviewPatchDTO reviewReq, Authentication authentication) {
+		if (!isAuthenticated(authentication)) {
+			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		if (!isOwner(reviewService.getOne(id), authentication)) {
+			return new ApiResponse("Forbidden", HttpStatus.FORBIDDEN);
+		}
 		return new ApiResponse(
 			"Review updated partially",
 			reviewService.patch(id, reviewReq));
 	}
 
 	@DeleteMapping("/{id}")
-	public ApiResponse delete(@PathVariable("id") Long id) {
+	public ApiResponse delete(@PathVariable("id") Long id, Authentication authentication) {
+		if (!isAuthenticated(authentication)) {
+			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+		}
+		if (!isOwner(reviewService.getOne(id), authentication)) {
+			return new ApiResponse("Forbidden", HttpStatus.FORBIDDEN);
+		}
 		return new ApiResponse(
 			"Deleted review N° "+id.toString(),
 			reviewService.delete(id));
@@ -102,5 +120,10 @@ public class ReviewController {
 		return authentication != null
 			&& authentication.isAuthenticated()
 			&& !"anonymousUser".equals(authentication.getName());
+	}
+
+	private boolean isOwner(Review review, Authentication authentication) {
+		return review.getAuthor() != null
+			&& review.getAuthor().getNick().equals(authentication.getName());
 	}
 }

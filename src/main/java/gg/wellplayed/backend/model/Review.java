@@ -27,6 +27,9 @@ public class Review {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	// @Builder.Default es necesario: @Builder por si solo ignora los inicializadores de campo,
+	// así que sin esto Review.builder().build() (usado al crear reviews) siempre dejaba createdAt en null.
+	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
 	private float score;
 	private String title = null;
