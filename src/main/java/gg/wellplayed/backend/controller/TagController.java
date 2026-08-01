@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
@@ -58,10 +59,15 @@ public class TagController {
 		System.out.println(tag);
 		return new ApiResponse(
 			name,
-			tag, 
+			tag,
 			HttpStatus.OK);
 	}
-	
+
+	@GetMapping("/search")
+	public ApiResponse search(@RequestParam("name") String name) {
+		return new ApiResponse(tagService.findByName(name));
+	}
+
 	// PostMapping indica que este método se mapea a las request tipo POST /tag
 	@PostMapping
 	public ApiResponse create(@RequestBody Tag tagReq) {

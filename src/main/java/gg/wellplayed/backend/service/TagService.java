@@ -26,6 +26,10 @@ public class TagService {
 	public List<Tag> findAll() {
 		return tagRepository.findAll();
 	}
+
+	public List<Tag> findByName(String name) {
+		return tagRepository.findByNameContainingIgnoreCase(name);
+	}
 	
 	public Tag getOne(Long id) {
 		return tagRepository.findById(id).orElseThrow();
