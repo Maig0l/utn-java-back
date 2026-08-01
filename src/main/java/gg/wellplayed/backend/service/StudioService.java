@@ -21,6 +21,10 @@ public class StudioService {
 	public List<Studio> findAll(){
 		return studioRepository.findAll();
 	}
+
+	public List<Studio> findByName(String name) {
+		return studioRepository.findByNameContainingIgnoreCase(name);
+	}
 	
 	public Studio getOne(Long id) {
 		return studioRepository.findById(id).get();
