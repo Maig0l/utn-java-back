@@ -1,9 +1,11 @@
 package gg.wellplayed.backend.config;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -23,5 +25,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AccessDeniedException.class)
 	public ApiResponse handleForbidden(AccessDeniedException e) {
 		return new ApiResponse("Forbidden", HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ApiResponse handleValidation(MethodArgumentNotValidException e) {
+		String message = e.getBindingResult().getFieldErrors().stream()
+			.map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+			.collect(Collectors.joining(", "));
+		return new ApiResponse(message, HttpStatus.BAD_REQUEST);
 	}
 }
