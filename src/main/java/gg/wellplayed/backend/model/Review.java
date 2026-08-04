@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,7 +33,9 @@ public class Review {
 	// así que sin esto Review.builder().build() (usado al crear reviews) siempre dejaba createdAt en null.
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
-	private float score;
+	@Min(1)
+	@Max(5)
+	private int score;
 	private String title = null;
 	private String body = null;
 

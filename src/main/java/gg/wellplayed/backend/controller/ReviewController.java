@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -58,7 +59,7 @@ public class ReviewController {
 
 
 	@PostMapping
-	public ApiResponse makeReview(@RequestBody ReviewCreateDTO reviewReq, Authentication authentication) {
+	public ApiResponse makeReview(@Valid @RequestBody ReviewCreateDTO reviewReq, Authentication authentication) {
 		if (!isAuthenticated(authentication)) {
 			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}
@@ -78,7 +79,7 @@ public class ReviewController {
 
 
 	@PutMapping("/{id}")
-	public ApiResponse update(@PathVariable("id") Long id, @RequestBody Review reviewReq, Authentication authentication) {
+	public ApiResponse update(@PathVariable("id") Long id, @Valid @RequestBody Review reviewReq, Authentication authentication) {
 		if (!isAuthenticated(authentication)) {
 			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}
@@ -91,7 +92,7 @@ public class ReviewController {
 	}
 
 	@PatchMapping("/{id}")
-	public ApiResponse patch(@PathVariable("id") Long id, @RequestBody ReviewPatchDTO reviewReq, Authentication authentication) {
+	public ApiResponse patch(@PathVariable("id") Long id, @Valid @RequestBody ReviewPatchDTO reviewReq, Authentication authentication) {
 		if (!isAuthenticated(authentication)) {
 			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}

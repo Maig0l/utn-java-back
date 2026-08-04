@@ -5,6 +5,8 @@ import gg.wellplayed.backend.model.Review;
 import gg.wellplayed.backend.model.User;
 import gg.wellplayed.backend.service.GameService;
 import gg.wellplayed.backend.service.UserService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,9 @@ import lombok.NoArgsConstructor;
 public class ReviewCreateDTO {
 	String title;
 	String body;
-	float score;
+	@Min(1)
+	@Max(5)
+	int score;
 	Long game;
 	Long author;
 }

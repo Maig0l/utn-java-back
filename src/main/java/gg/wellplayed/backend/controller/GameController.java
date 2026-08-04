@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.Valid;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
 import gg.wellplayed.backend.dataTransfer.game.GameCreateDTO;
@@ -252,7 +253,7 @@ public class GameController {
 	}
 
 	@PostMapping("/{id}/reviews")
-	public ApiResponse postGameReview(@PathVariable("id") Long id, @RequestBody ReviewPostDTO reviewReq, Authentication authentication) {
+	public ApiResponse postGameReview(@PathVariable("id") Long id, @Valid @RequestBody ReviewPostDTO reviewReq, Authentication authentication) {
 		if (!isAuthenticated(authentication)) {
 			return new ApiResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
 		}
