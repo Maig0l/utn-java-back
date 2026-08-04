@@ -42,7 +42,8 @@ public class Studio {
 	
 	public enum StudioType {
 		Publisher,
-		Developer
+		Developer,
+		Both
 	}
 	public Studio(Studio s) {
 		this.id = s.getId();
