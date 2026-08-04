@@ -3,6 +3,7 @@ package gg.wellplayed.backend.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
@@ -82,6 +83,7 @@ public class Game {
 
 	@ManyToOne
 	@JoinColumn(name = "franchise_id")
+	@JsonIgnoreProperties("games")
 	private Franchise franchise;
 	
 	public double getCumulativeRating() {

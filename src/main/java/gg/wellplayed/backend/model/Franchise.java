@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.FetchType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -19,20 +19,23 @@ import java.util.List;
 
 @Entity
 @Table
-@Getter					
-@Setter					
-@AllArgsConstructor		
-@NoArgsConstructor		
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Franchise {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String name;
-	
-	
+
+
 	// Hay que ver como se hace el uno a muchos, por ahora dejo la lista de juegos
-	@JsonIgnore
+	// READ_ONLY: se serializa en las respuestas, pero se ignora si viene en el body
+	// de un request (el front manda solo IDs, no objetos Game completos, y la relación
+	// real se maneja vía Game.franchise a través de los endpoints /franchises/{id}/games)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@OneToMany(mappedBy = "franchise", fetch = FetchType.LAZY)
 	private List<Game> games;
 	

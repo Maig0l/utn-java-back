@@ -16,16 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gg.wellplayed.backend.dataTransfer.api.ApiResponse;
+import gg.wellplayed.backend.dataTransfer.franchise.LinkGameDTO;
 import gg.wellplayed.backend.model.Franchise;
+import gg.wellplayed.backend.model.Game;
 import gg.wellplayed.backend.service.FranchiseService;
+import gg.wellplayed.backend.service.GameService;
 
 @RestController
 @RequestMapping("/franchises")
 public class FranchiseController {
-	
+
 		@Autowired
 		FranchiseService franchiseService;
-		
+		@Autowired
+		GameService gameService;
+
 		/** CRUD Operations **/
 		
 		
@@ -78,5 +83,27 @@ public class FranchiseController {
 			return new ApiResponse(
 				"Deleted franchise N° "+id.toString(),
 				franchiseService.delete(id));
+		}
+
+		/** Relationship operations **/
+
+		@PostMapping("/{id}/games")
+		public ApiResponse linkGame(@PathVariable("id") Long franchiseId, @RequestBody LinkGameDTO linkGameReq) {
+			Franchise franchise = franchiseService.getOne(franchiseId);
+			Game game = gameService.getOne(linkGameReq.gameId());
+			game.setFranchise(franchise);
+			gameService.saveUser(game);
+			return new ApiResponse("Game linked to franchise correctly");
+		}
+
+		@DeleteMapping("/{id}/games/{gameId}")
+		public ApiResponse unlinkGame(@PathVariable("id") Long franchiseId, @PathVariable("gameId") Long gameId) {
+			Game game = gameService.getOne(gameId);
+			if (game.getFranchise() == null || !game.getFranchise().getId().equals(franchiseId)) {
+				return new ApiResponse("Game is not linked to this franchise", HttpStatus.BAD_REQUEST);
+			}
+			game.setFranchise(null);
+			gameService.saveUser(game);
+			return new ApiResponse("Game unlinked from franchise correctly");
 		}
 }
