@@ -85,15 +85,14 @@ public class Game {
 	@JoinColumn(name = "franchise_id")
 	@JsonIgnoreProperties("games")
 	private Franchise franchise;
-	
+
 	public double getCumulativeRating() {
 		if (reviews == null || reviews.isEmpty()) {
 			return 0;
 		}
 		return reviews.stream()
 			.mapToDouble(Review::getScore)
-			.average()
-			.orElse(0);
+			.sum();
 	}
 
 	public int getReviewCount() {
